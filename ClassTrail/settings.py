@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-vo(0rpdm+neyn0whkq$o09@^64yp3$-0=wg=iik!qp4t5alq^u
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['classtrail.herokuapp.com']
 
 AUTH_USER_MODEL = 'accounts.User'
 # Application definition
