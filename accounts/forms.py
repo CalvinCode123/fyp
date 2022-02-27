@@ -6,7 +6,6 @@ from .models import Teacher, Student, User
 class TeacherSignUpForm(UserCreationForm):
     first_name = forms.CharField(required=True)
     last_name = forms.CharField(required=True)
-    #teacher_name = forms.CharField(required=True)
 
     class Meta(UserCreationForm.Meta):
         model = User
@@ -22,14 +21,13 @@ class TeacherSignUpForm(UserCreationForm):
         user.last_name = self.cleaned_data.get('last_name')
         user.save()#saving in user table
         teacher = Teacher.objects.create(user=user)
-        teacher.teacher_name = self.cleaned_data.get('teacher_name')
+        #teacher.teacher_name = self.cleaned_data.get('teacher_name')
         teacher.save()
         return user
 
 class StudentSignUpForm(UserCreationForm):
     first_name = forms.CharField(required=True)
     last_name = forms.CharField(required=True)
-    #student_name = forms.CharField(required=True)
 
     class Meta(UserCreationForm.Meta):
         model = User
@@ -44,6 +42,6 @@ class StudentSignUpForm(UserCreationForm):
         user.last_name = self.cleaned_data.get('last_name')
         user.save()#saving in user table
         student = Student.objects.create(user=user)
-        student.student_name = self.cleaned_data.get('student_name')# data passed to server as string. clean data converts to appropriate type
+        #student.student_name = self.cleaned_data.get('student_name')# data passed to server as string. clean data converts to appropriate type
         student.save()
         return user
