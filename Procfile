@@ -1,1 +1,1 @@
-web: waitress-serve --port=$PORT classtrail2.wsgi:application 
+web: waitress-serve --port=$PORT ClassTrail.wsgi:application 
