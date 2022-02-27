@@ -28,7 +28,6 @@ SECRET_KEY = 'django-insecure-vo(0rpdm+neyn0whkq$o09@^64yp3$-0=wg=iik!qp4t5alq^u
 DEBUG = True
 
 ALLOWED_HOSTS = ['classtrail.herokuapp.com']
-CSRF_TRUSTED_ORIGINS = ['classtrail.herokuapp.com']
 
 AUTH_USER_MODEL = 'accounts.User'
 # Application definition
@@ -82,12 +81,8 @@ WSGI_APPLICATION = 'ClassTrail.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'ClassTrailDB',
-        'USER' : 'postgres',
-        'PASSWORD' : 'LLqaz',
-        'HOST' : 'localhost',
-        'PORT' : '1234',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
 
