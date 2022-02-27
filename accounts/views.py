@@ -5,7 +5,7 @@ from django.contrib.auth import login, logout,authenticate
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib import messages
 from .forms import TeacherSignUpForm, StudentSignUpForm
-
+from django.views.decorators.csrf import csrf_exempt
 # Create your views here.
 
 def register(request):
@@ -25,6 +25,7 @@ class teacher_register(CreateView):
     form_class = TeacherSignUpForm
     template_name = '../templates/teacher_register.html'
 
+    @csrf_exempt
     def form_valid(self, form):
         user=form.save()
         login(self.request, user)
