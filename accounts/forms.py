@@ -1,7 +1,7 @@
 from django.contrib.auth.forms import UserCreationForm
 from django import forms
 from django.db import transaction
-from .models import Teacher, Student, User
+from .models import Teacher, Student, User, Classroom
 
 class TeacherSignUpForm(UserCreationForm):
     first_name = forms.CharField(required=True)
@@ -45,3 +45,12 @@ class StudentSignUpForm(UserCreationForm):
         #student.student_name = self.cleaned_data.get('student_name')# data passed to server as string. clean data converts to appropriate type
         student.save()
         return user
+
+class CreateClassroomForm(forms.Form):
+    def __init__(self,*args,**kwargs):
+        super(CreateClassroomForm,self).__init__()
+        self.fields['classroom_subject'].label=''
+        self.fields['classroom_code'].label=''
+
+    classroom_subject = forms.CharField(max_length=100,label='Classroom Subject')
+    classroom_code= forms.CharField(max_length=100,label='Classroom Code')

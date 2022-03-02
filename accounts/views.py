@@ -1,10 +1,11 @@
 from django.shortcuts import render, redirect
 from django.views.generic import CreateView
-from .models import User
+from .models import User, Classroom, Teacher, Student
 from django.contrib.auth import login, logout,authenticate
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib import messages
-from .forms import TeacherSignUpForm, StudentSignUpForm
+from .forms import TeacherSignUpForm, StudentSignUpForm, CreateClassroomForm
+from django.http import JsonResponse
 # Create your views here.
 
 def register(request):
@@ -57,3 +58,13 @@ def login_request(request):
 def logout_view(request):
     logout(request)
     return redirect('/')
+
+def create_classroom(request):
+    if request.POST.get('action') == 'post':
+        classroom = Classroom.objects.all()
+        classroom_subject = request.POST.get('classroom_subject')
+        classroom_code = request.POST.get('classroom_code')
+        classroom = Classroom(classroom_subject)
+        classroom.save()
+        return JsonResponse({'status':'SUCCESS'})
+    
