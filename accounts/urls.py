@@ -10,4 +10,5 @@ urlpatterns=[
     path('teacher_hub/', views.teacher_hub, name = 'teacher_hub'),
     path('student_hub/', views.student_hub, name = 'student_hub'),
     path('manage_classes', views.manage_classes, name = 'manage_classes'),
+    path('create_classroom',views.create_classroom,name='create_classroom'),
 ]
