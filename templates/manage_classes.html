@@ -85,11 +85,11 @@ function create_class()
     
 
     //setting details for a new data object to send to server
-    class_subject =  $(" #classroom_subject ").val();
-    console.log(class_subject);
-    class_code = $(" #classroom_code ").val();
-    console.log(class_code);
-
+    classroom_subject =  $(" #classroom_subject ").val();
+    console.log(classroom_subject);
+    classroom_code = $(" #classroom_code ").val();
+    console.log(classroom_code);
+    
     $.ajax({
       type: 'POST',
       url: '{% url "create_classroom" %}',
@@ -102,9 +102,9 @@ function create_class()
       //dataType: 'json',
       success: function (data, status, response) {
         var id = response.responseJSON;
-
+        console.log(id);
       }
-    });
+    }); 
   }
     </script>
 <!--
@@ -179,10 +179,9 @@ function create_class()
         <div class="form-group">
           <textarea class="form-control" id="classroom_code" placeholder="Classroom Code"></textarea>
         </div>
-        <button type="submit" onclick = "create_class" class="btn btn-primary">Submit</button>
+        <button type="submit"  onclick = "create_class()" class="btn btn-primary">Submit</button>
       </form> 
  </div>
-    <!--<button type="button" class="btn btn-primary btn-lg">Create Class +</button>-->
 
 
 </body>
