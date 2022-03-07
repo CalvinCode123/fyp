@@ -61,10 +61,13 @@ def logout_view(request):
 
 def create_classroom(request):
     if request.POST.get('action') == 'post':
-        classroom = Classroom.objects.all()
-        classroom_subject = request.POST.get('classroom_subject')
-        classroom_code = request.POST.get('classroom_code')
-        classroom = Classroom(classroom_subject)
+        #classroom = Classroom.objects.all()
+        class_subject = request.POST.get('classroom_subject')
+        class_code = request.POST.get('classroom_code')
+        teacher = request.user
+        classroom = Classroom(classroom_subject = class_subject, classroom_code = class_code, teacher = teacher)
+        
         classroom.save()
         return JsonResponse({'status':'SUCCESS'})
     
+
