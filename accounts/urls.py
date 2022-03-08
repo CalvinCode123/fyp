@@ -9,6 +9,7 @@ urlpatterns=[
     path('logout/', views.logout_view, name='logout'),
     path('teacher_hub/', views.teacher_hub, name = 'teacher_hub'),
     path('student_hub/', views.student_hub, name = 'student_hub'),
-    path('manage_classes', views.manage_classes, name = 'manage_classes'),
-    path('create_classroom',views.create_classroom,name='create_classroom'),
+    path('manage_classes/', views.manage_classes, name = 'manage_classes'),
+    path('create_classroom/',views.create_classroom,name='create_classroom'),
+    path('classroom_list/',views.TeacherClassesView.as_view(),name='classroom_list'),
 ]

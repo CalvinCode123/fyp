@@ -1,5 +1,6 @@
+from types import ClassMethodDescriptorType
 from django.shortcuts import render, redirect
-from django.views.generic import CreateView
+from django.views.generic import CreateView, ListView
 from .models import User, Classroom, Teacher, Student
 from django.contrib.auth import login, logout,authenticate
 from django.contrib.auth.forms import AuthenticationForm
@@ -19,6 +20,8 @@ def student_hub(request):
 
 def manage_classes(request):
     return render(request, '../templates/manage_classes.html')
+
+
 
 class teacher_register(CreateView):
     models = User
@@ -71,3 +74,13 @@ def create_classroom(request):
         return JsonResponse({'status':'SUCCESS'})
     
 
+
+class TeacherClassesView(ListView):
+    model = Classroom
+    template_name = 'classroom_list.html'
+    context_object_name = 'classroom_list'
+
+    def get_queryset(self):
+        return Classroom.objects.filter(
+            teacher_id = self.request.user
+        )
