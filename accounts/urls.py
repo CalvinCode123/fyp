@@ -12,4 +12,5 @@ urlpatterns=[
     path('manage_classes/', views.manage_classes, name = 'manage_classes'),
     path('create_classroom/',views.create_classroom,name='create_classroom'),
     path('classroom_list/',views.TeacherClassesView.as_view(),name='classroom_list'),
+    path('classroom_list/<int:id>', views.render_classroom, name = 'classroom')
 ]

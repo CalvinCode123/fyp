@@ -1,6 +1,6 @@
 from types import ClassMethodDescriptorType
-from django.shortcuts import render, redirect
-from django.views.generic import CreateView, ListView
+from django.shortcuts import render, redirect, get_object_or_404
+from django.views.generic import CreateView, ListView, DeleteView
 from .models import User, Classroom, Teacher, Student
 from django.contrib.auth import login, logout,authenticate
 from django.contrib.auth.forms import AuthenticationForm
@@ -84,3 +84,12 @@ class TeacherClassesView(ListView):
         return Classroom.objects.filter(
             teacher_id = self.request.user
         )
+
+def render_classroom(request, id):
+    classroom = Classroom.objects.get(id=id)
+    print(classroom.id)
+    return render(request, 'classroom.html', {'classroom':classroom})
+
+
+
+
