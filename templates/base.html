@@ -7,22 +7,16 @@
 
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
   
     <title>ClassTrail</title>
-    
+
     <style>
       /* Remove the navbar's default margin-bottom and rounded borders */ 
       .navbar {
         margin-bottom: 0;
         border-radius: 0;
-      }
-
-      .jumbotron {
-        height: 10vw;
-
       }
       
       table, td {
@@ -78,49 +72,10 @@
       margin-bottom: 5vw;
     }
     </style>
-
-<script>
-    function join_class()
-      {
-        
-    
-        //setting details for a new data object to send to server
-        classroom_id =  $(" #classroom_id ").val();
-        console.log(classroom_id);
-        classroom_code = $(" #classroom_code ").val();
-        console.log(classroom_code);
-        
-        $.ajax({
-          type: 'POST',
-          url: '{% url "join_classroom" %}',
-          data:{
-                    classroom_id:$('#classroom_id').val(),
-                    classroom_code:$('#classroom_code').val(),
-                    csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
-                    action: 'post'
-                },
-          //dataType: 'json',
-          success: function (data, status, response) {
-            var id = response.responseJSON;
-            console.log(id);
-          }
-        }); 
-      }
-        </script>
-
-<script>
-  $(document).ready(function(){
-    $("#joinclassform").hide();
-    $("#joinclassbutton").click(function(){
-      $("#joinclassform").toggle();
-    });
-  });
-</script>
-
 </head>
 <body>
 
-  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+ <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <a class="navbar-brand" href="{% url 'index' %}">ClassTrail</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
@@ -147,27 +102,3 @@
       </span>
     </div>
   </nav>
-
-    <div class="jumbotron">
-        <div class="container text-center">
-          <h1>My Classes</h1>      
-        </div>
-    </div>
-
-    <a href="{% url 'student_classroom_list' %}" class="btn btn-outline-primary" role="button">My Classrooms</a>
-    <button type="button" class="btn btn-outline-success" id = "joinclassbutton">Join Classroom</button>
-
-    <div class="modal-body" id="joinclassform">
-      <form method="POST" class="cclass_form" id="JoinClassroomForm">
-        {% csrf_token %}
-        <div class="form-group">
-          <input type="text" class="form-control" id="classroom_id" placeholder="classroom id">
-        </div>
-        <div class="form-group">
-          <textarea class="form-control" id="classroom_code" placeholder="Classroom Code"></textarea>
-        </div>
-        <button type="submit"  onclick = "join_class()" class="btn btn-primary">Join Class</button>
-      </form> 
-
-</body>
-</html>

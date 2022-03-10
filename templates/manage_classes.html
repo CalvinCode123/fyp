@@ -107,31 +107,15 @@ function create_class()
     }); 
   }
     </script>
-<!--
+
     <script>
-         $('#CreateClassroomForm').on('submit', function (e) {
-        e.preventDefault();
-        console.log("in ajax function")
-        $.ajax({
-            type:'POST',
-            url:'{% url "create_classroom" %}',
-            data:{
-                classroom_subject:$('#classroom_subject').val(),
-                classroom_code:$('#classroom_code').val(),
-                csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
-                action: 'post'
-            },
-            success:function(json){
-                console.log("posted")
-                
-            },
-            error : function(xhr,errmsg,err) {
-                console.log(xhr.status + ": " + xhr.responseText);
-            }
+      $(document).ready(function(){
+        $("#createform").hide();
+        $("#create_class_button").click(function(){
+          $("#createform").toggle();
         });
       });
     </script>
--->
 
 </head>
 <body>
@@ -169,8 +153,12 @@ function create_class()
           <h1>Manage Classes</h1>      
         </div>
     </div>
+  
+    <a href="{% url 'classroom_list' %}" class="btn btn-outline-primary" role="button">My Classrooms</a>
+    <button type="button" class="btn btn-outline-success" id = "create_class_button">Create Classroom</button>
 
-    <div class="modal-body">
+    <div class="modal-body" id = "createform">
+      <h5>Create Classroom:</h5>
       <form method="POST" class="cclass_form" id="CreateClassroomForm">
         {% csrf_token %}
         <div class="form-group">
@@ -181,11 +169,6 @@ function create_class()
         </div>
         <button type="submit"  onclick = "create_class()" class="btn btn-primary">Submit</button>
       </form> 
-
-
-      <button type="button"  href="{% url 'classroom_list' %}" class="btn btn-primary">My Classes</button>
-      <li><a href="{% url 'classroom_list' %}"><span class="glyphicon glyphicon-log-in"></span> View My Classes</a></li>
-
  </div>
 
 
