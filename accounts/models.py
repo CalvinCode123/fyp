@@ -17,14 +17,14 @@ class User(AbstractUser):
 class Teacher(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
     teacher_name = models.CharField(max_length=100)
-    teacher_id = models.CharField(max_length=20, default='000')
-
-class Student(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
-    student_name = models.CharField(max_length=100)
-    student_id = models.CharField(max_length=20, default='000')
 
 class Classroom(models.Model):
     classroom_subject = models.CharField(max_length=100)
     classroom_code = models.CharField(max_length= 5, default = '00000')
     teacher = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+
+class Student(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
+    student_name = models.CharField(max_length=100)
+    classes = models.ManyToManyField(Classroom, blank = True)
+

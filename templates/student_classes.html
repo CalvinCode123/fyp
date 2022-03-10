@@ -12,7 +12,7 @@
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
   
     <title>ClassTrail</title>
-
+    
     <style>
       /* Remove the navbar's default margin-bottom and rounded borders */ 
       .navbar {
@@ -77,18 +77,36 @@
     #myCarousel{
       margin-bottom: 5vw;
     }
-
-
     </style>
 
 <script>
-    $(document).ready(function(){
-        $("#edit_form").hide();
-      $("#edit_button").click(function(){
-        $("#edit_form").toggle();
-      });
-    });
-</script>
+    function join_class()
+      {
+        
+    
+        //setting details for a new data object to send to server
+        classroom_id =  $(" #classroom_id ").val();
+        console.log(classroom_id);
+        classroom_code = $(" #classroom_code ").val();
+        console.log(classroom_code);
+        
+        $.ajax({
+          type: 'POST',
+          url: '{% url "join_classroom" %}',
+          data:{
+                    classroom_id:$('#classroom_id').val(),
+                    classroom_code:$('#classroom_code').val(),
+                    csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
+                    action: 'post'
+                },
+          //dataType: 'json',
+          success: function (data, status, response) {
+            var id = response.responseJSON;
+            console.log(id);
+          }
+        }); 
+      }
+        </script>
 
 </head>
 <body>
@@ -104,7 +122,7 @@
         <li class="nav-item active"><a class="nav-link" href="{% url 'teacher_hub' %}">Teacher Hub</a></li>
         {% endif %}
         {% if user.is_authenticated and user.is_student %}
-        <li class="nav-item active"><a class="nav-link" href="#">Student Hub</a></li>
+        <li class="nav-item active"><a class="nav-link" href="{% url 'student_hub' %}">Student Hub</a></li>
         {% endif %}
         
       </ul>
@@ -123,31 +141,27 @@
 
     <div class="jumbotron">
         <div class="container text-center">
-          <h1>{{classroom.classroom_subject}}</h1>      
+          <h1>My Classes</h1>      
         </div>
     </div>
 
+    <li><a href=""><span class="glyphicon glyphicon-log-in"></span> Join Class</a></li>
 
 
-   <button type="button" id = "edit_button" class="btn btn-primary">Edit Classroom</button>
+    <div class="modal-body">
+      <form method="POST" class="cclass_form" id="JoinClassroomForm">
+        {% csrf_token %}
+        <div class="form-group">
+          <input type="text" class="form-control" id="classroom_id" placeholder="classroom id">
+        </div>
+        <div class="form-group">
+          <textarea class="form-control" id="classroom_code" placeholder="Classroom Code"></textarea>
+        </div>
+        <button type="submit"  onclick = "join_class()" class="btn btn-primary">Join Class</button>
+      </form> 
 
-   <a href=""></a><button type="button"  class="btn btn-primary">Delete Classroom</button></a>
 
-    <h1>Teacher Name: {{classroom.teacher.first_name}} {{classroom.teacher.last_name}}</h1> 
-
-    <div class="modal-body" id = "edit_form">
-        <form method="POST" class="cclass_form" id="CreateClassroomForm">
-          {% csrf_token %}
-          <div class="form-group">
-            <input type="text" class="form-control" id="classroom_subject" placeholder="classroom Subject">
-          </div>
-          <div class="form-group">
-            <textarea class="form-control" id="classroom_code" placeholder="Classroom Code"></textarea>
-          </div>
-          <button type="submit"  onclick = "create_class()" class="btn btn-primary">Submit</button>
-        </form> 
-    
-   </div>
+      <li><a href="{% url 'student_classroom_list' %}"><span class="glyphicon glyphicon-log-in"></span> View My Classes</a></li>
 
 </body>
 </html>

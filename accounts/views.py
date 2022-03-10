@@ -21,6 +21,8 @@ def student_hub(request):
 def manage_classes(request):
     return render(request, '../templates/manage_classes.html')
 
+def student_classes(request):
+    return render(request, '../templates/student_classes.html')
 
 
 class teacher_register(CreateView):
@@ -72,18 +74,49 @@ def create_classroom(request):
         
         classroom.save()
         return JsonResponse({'status':'SUCCESS'})
+
+def join_classroom(request):
+    if request.POST.get('action') == 'post':
+        #classroom = Classroom.objects.all()
+        class_id = request.POST.get('classroom_id')
+        print(class_id)
+        user_id = request.user.id
+        student = Student.objects.get(user_id = user_id)
+        print(student)
+        classroom = Classroom.objects.get(id = class_id)
+        print(classroom)
+        student.classes.add(classroom)
+        student.save()
     
+        return JsonResponse({'status':'SUCCESS'})
+
+
 
 
 class TeacherClassesView(ListView):
     model = Classroom
     template_name = 'classroom_list.html'
     context_object_name = 'classroom_list'
-
+    
     def get_queryset(self):
         return Classroom.objects.filter(
             teacher_id = self.request.user
         )
+
+class StudentClassesView(ListView):
+    model = Classroom
+    template_name = 'student_classroom_list.html'
+    context_object_name = 'classroom_list'
+    
+    
+    def get_queryset(self):
+        student_id = self.request.user.id
+        print(student_id)
+        return Classroom.objects.filter(
+            student__user= self.request.user
+        )
+ 
+
 
 def render_classroom(request, id):
     classroom = Classroom.objects.get(id=id)
@@ -92,4 +125,8 @@ def render_classroom(request, id):
 
 
 
-
+class DeleteClassroomView(DeleteView):
+    model = Classroom
+    context_object_name = 'classroom'
+    template_name = 'classroom/teachers/question_delete_confirm.html'
+    pk_url_kwarg = 'question_pk'
