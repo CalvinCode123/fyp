@@ -157,6 +157,14 @@ function create_class()
     <a href="{% url 'classroom_list' %}" class="btn btn-outline-primary" role="button">My Classrooms</a>
     <button type="button" class="btn btn-outline-success" id = "create_class_button">Create Classroom</button>
 
+    {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+        <li  {% if message.tags %} class=" {{ message.tags }} " {% endif %}> {{ message }} </li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    
     <div class="modal-body" id = "createform">
       <h5>Create Classroom:</h5>
       <form method="POST" class="cclass_form" id="CreateClassroomForm">

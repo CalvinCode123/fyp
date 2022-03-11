@@ -6,7 +6,7 @@ from django.contrib.auth import login, logout,authenticate
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib import messages
 from .forms import TeacherSignUpForm, StudentSignUpForm, CreateClassroomForm
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseRedirect
 # Create your views here.
 
 def register(request):
@@ -75,10 +75,28 @@ def create_classroom(request):
         classroom.save()
         return JsonResponse({'status':'SUCCESS'})
 
+'''
+def create_classroom(request):
+    if request.method=='POST':
+        form = CreateClassroomForm(data=request.POST)
+        if form.is_valid(): #is_valid() checks if username and pword has the appropriate data type
+            class_subject = form.cleaned_data.get('classroom_subject') #setting variables from user input
+            class_code = form.cleaned_data.get('classroom_code')
+            teacher = request.user
+            classroom = Classroom(classroom_subject = class_subject, classroom_code = class_code, teacher = teacher)
+            classroom.save()
+            messages.success(request, "classroom successfully created")
+
+        else:
+            messages.error(request, "")
+    return render(request, '../templates/manage_classes',
+    context={'form':CreateClassroomForm()})
+'''
 def join_classroom(request):
     if request.POST.get('action') == 'post':
         #classroom = Classroom.objects.all()
         class_id = request.POST.get('classroom_id')
+        class_code = request.POST.get('classroom_code')
         print(class_id)
         user_id = request.user.id
         student = Student.objects.get(user_id = user_id)
@@ -86,9 +104,12 @@ def join_classroom(request):
         classroom = Classroom.objects.get(id = class_id)
         print(classroom)
         student.classes.add(classroom)
-        student.save()
-    
+        student.save()     
+        messages.success(request, 'Succesfully joined class')
+
         return JsonResponse({'status':'SUCCESS'})
+
+
 
 
 

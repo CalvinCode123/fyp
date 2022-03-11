@@ -108,14 +108,7 @@
       }
         </script>
 
-<script>
-  $(document).ready(function(){
-    $("#joinclassform").hide();
-    $("#joinclassbutton").click(function(){
-      $("#joinclassform").toggle();
-    });
-  });
-</script>
+
 
 </head>
 <body>
@@ -156,6 +149,14 @@
 
     <a href="{% url 'student_classroom_list' %}" class="btn btn-outline-primary" role="button">My Classrooms</a>
     <button type="button" class="btn btn-outline-success" id = "joinclassbutton">Join Classroom</button>
+
+    {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+        <li  {% if message.tags %} class=" {{ message.tags }} " {% endif %}> {{ message }} </li>
+        {% endfor %}
+    </ul>
+    {% endif %}
 
     <div class="modal-body" id="joinclassform">
       <form method="POST" class="cclass_form" id="JoinClassroomForm">
