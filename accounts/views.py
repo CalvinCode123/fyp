@@ -75,6 +75,7 @@ def create_classroom(request):
         classroom.save()
         return JsonResponse({'status':'SUCCESS'})
 
+
 '''
 def create_classroom(request):
     if request.method=='POST':
@@ -92,6 +93,7 @@ def create_classroom(request):
     return render(request, '../templates/manage_classes',
     context={'form':CreateClassroomForm()})
 '''
+
 def join_classroom(request):
     if request.POST.get('action') == 'post':
         #classroom = Classroom.objects.all()
