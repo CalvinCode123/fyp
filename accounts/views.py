@@ -73,7 +73,11 @@ def create_classroom(request):
         classroom = Classroom(classroom_subject = class_subject, classroom_code = class_code, teacher = teacher)
         
         classroom.save()
-        return JsonResponse({'status':'SUCCESS'})
+        messages.success(request, "joined class")
+    
+    return render(request, '../templates/manage_classes.html')
+
+        #return JsonResponse({'status':'SUCCESS'})
 
 
 '''
@@ -150,6 +154,13 @@ def render_classroom(request, id):
 
 class DeleteClassroomView(DeleteView):
     model = Classroom
-    context_object_name = 'classroom'
-    template_name = 'classroom/teachers/question_delete_confirm.html'
-    pk_url_kwarg = 'question_pk'
+    template_name = 'classroom_confirm_delete.html'
+    success_url = "/"
+
+def delete_classroom(request, id):
+    #classroom = Classroom.objects.get(id=id)
+    #Classroom.objects.filter(id=classroom_id).delete()
+    #test = Classroom.objects.filter(id=classroom_id)
+    #print(test)
+    return render(request, '../templates/classroom_list.html')
+

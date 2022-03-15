@@ -131,7 +131,7 @@
 
    <button type="button" id = "edit_button" class="btn btn-primary">Edit Classroom</button>
 
-   <a href=""></a><button type="button"  class="btn btn-primary">Delete Classroom</button></a>
+   <a href="{% url 'delete_classroom' classroom_id=classroom.id %}"></a><button type="button"  class="btn btn-primary">Delete Classroom</button></a>
 
     <h1>Teacher Name: {{classroom.teacher.first_name}} {{classroom.teacher.last_name}}</h1> 
 
