@@ -28,3 +28,7 @@ class Student(models.Model):
     student_name = models.CharField(max_length=100)
     classes = models.ManyToManyField(Classroom, blank = True)
 
+class WorkItem(models.Model):
+    classroom = models.ForeignKey(Classroom, on_delete=models.CASCADE)
+    work_description = models.CharField(max_length=500)
+

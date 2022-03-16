@@ -1,7 +1,7 @@
 from django.contrib.auth.forms import UserCreationForm
 from django import forms
 from django.db import transaction
-from .models import Teacher, Student, User, Classroom
+from .models import Teacher, Student, User, Classroom, WorkItem
 
 class TeacherSignUpForm(UserCreationForm):
     first_name = forms.CharField(required=True)
@@ -46,11 +46,13 @@ class StudentSignUpForm(UserCreationForm):
         student.save()
         return user
 
-class CreateClassroomForm(forms.Form):
-    def __init__(self,*args,**kwargs):
-        super(CreateClassroomForm,self).__init__()
-        self.fields['classroom_subject'].label=''
-        self.fields['classroom_code'].label=''
 
-    classroom_subject = forms.CharField(max_length=100,label='Classroom Subject')
-    classroom_code= forms.CharField(max_length=100,label='Classroom Code')
+class CreateClassroomForm(forms.ModelForm):
+    class Meta:
+        model = Classroom
+        fields= ['classroom_subject','classroom_code']
+    
+class CreateWorkItemForm(forms.ModelForm):
+    class Meta:
+        model = WorkItem
+        fields= ['classroom','work_description']

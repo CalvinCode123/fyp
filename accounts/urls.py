@@ -17,6 +17,7 @@ urlpatterns=[
     path('student_classroom_list/',views.StudentClassesView.as_view(),name='student_classroom_list'),
     path('classroom_list/<int:id>', views.render_classroom, name = 'classroom'),
     path('delete_classroom/<int:id>', views.delete_classroom, name = 'classroom_delete'),
+    path('assign_work', views.CreateWorkView.as_view(), name='assign_work'),
 
     #path('classroom_list/<int:id>/delete', views.DeleteClassroomView.as_view(), name = 'classroom_delete')
 ]

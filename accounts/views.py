@@ -1,11 +1,11 @@
 from types import ClassMethodDescriptorType
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import CreateView, ListView, DeleteView
-from .models import User, Classroom, Teacher, Student
+from .models import User, Classroom, Teacher, Student, WorkItem
 from django.contrib.auth import login, logout,authenticate
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib import messages
-from .forms import TeacherSignUpForm, StudentSignUpForm, CreateClassroomForm
+from .forms import TeacherSignUpForm, StudentSignUpForm, CreateClassroomForm, CreateWorkItemForm
 from django.http import JsonResponse, HttpResponseRedirect
 # Create your views here.
 
@@ -168,3 +168,26 @@ class DeleteClassroomView(DeleteView):
 
 
 
+class CreateWorkView(CreateView):
+    model = WorkItem
+    template_name = 'assign_work.html'
+    success_url = '/'
+
+    def create_work(request):
+    # This method is called when valid form data has been POSTed.
+    # It should return an HttpResponse.
+        if request.method == 'POST':
+            # create a form instance and populate it with data from the request:
+            form = CreateWorkItemForm(request.POST)
+            # check whether it's valid:
+            if form.is_valid():
+                # process the data in form.cleaned_data as required
+                # ...
+                # redirect to a new URL:
+                return HttpResponseRedirect('/')
+
+        # if a GET (or any other method) we'll create a blank form
+        else:
+            form = CreateWorkItemForm()
+
+        return render(request, 'assign_work.html', {'form': form})
