@@ -24,6 +24,15 @@ def manage_classes(request):
 def student_classes(request):
     return render(request, '../templates/student_classes.html')
 
+def delete_classroom(request, id):
+    #classroom = Classroom.objects.get(id=id)
+    #Classroom.objects.filter(id=classroom_id).delete()
+    #test = Classroom.objects.filter(id=classroom_id)
+    classroom = Classroom.objects.get(id=id)
+
+    print("delete")
+    return render(request, '../templates/classroom_delete.html', {'classroom':classroom})
+
 
 class teacher_register(CreateView):
     models = User
@@ -147,7 +156,7 @@ class StudentClassesView(ListView):
 
 def render_classroom(request, id):
     classroom = Classroom.objects.get(id=id)
-    print(classroom.id)
+    #print(classroom.id)
     return render(request, 'classroom.html', {'classroom':classroom})
 
 
@@ -157,10 +166,5 @@ class DeleteClassroomView(DeleteView):
     template_name = 'classroom_confirm_delete.html'
     success_url = "/"
 
-def delete_classroom(request, id):
-    #classroom = Classroom.objects.get(id=id)
-    #Classroom.objects.filter(id=classroom_id).delete()
-    #test = Classroom.objects.filter(id=classroom_id)
-    #print(test)
-    return render(request, '../templates/classroom_list.html')
+
 
