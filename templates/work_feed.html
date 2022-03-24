@@ -1,3 +1,4 @@
+{% load tz %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -18,6 +19,11 @@
       .navbar {
         margin-bottom: 0;
         border-radius: 0;
+      }
+
+      .jumbotron {
+        height: 10vw;
+
       }
       
       table, td {
@@ -73,6 +79,19 @@
       margin-bottom: 5vw;
     }
     </style>
+
+    <script>
+        
+        function convert_date(date)
+        {
+            return date.toISOString().slice(0, 10);
+        }
+
+
+    </script>
+
+
+
 </head>
 <body>
 
@@ -106,49 +125,91 @@
 
     <div class="jumbotron">
         <div class="container text-center">
-          <h1>{{ user.get_username }}'s StudentHub</h1>      
+          <h1>WorkFeed</h1>      
         </div>
     </div>
-  
-      <div class="container-fluid bg-3 text-center">    
-        <div class="row">
-          <div class="col-xs-12 col-sm-6 col-lg-3">
-            <div class="card text-white bg-primary mb-3" style="max-width: 18rem;">
-     
-                <div class="card-body">
-                    <a href="{% url 'classtrail' %}" class="card-title btn btn-primary stretched-link"><h5>ClassTrail</h5></a>
-                  <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                </div>
-              </div>
-          </div>
-          <div class="col-xs-12 col-sm-6 col-lg-3"> 
-            <div class="card text-white bg-primary mb-3" style="max-width: 18rem;">
-                <div class="card-body">
-                    <a href="{% url 'student_classes' %}" class="card-title btn btn-primary stretched-link"><h5>View Classes</h5></a>
-                  <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                </div>
-              </div>
-          </div>
-          <div class="col-xs-12 col-sm-6 col-lg-3"> 
-            <div class="card text-white bg-primary mb-3" style="max-width: 18rem;">
-                <div class="card-body">
-                    <a href="#" class="card-title btn btn-primary stretched-link"><h5>View Grades</h5></a>
-                  <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                </div>
-              </div>
-          </div>
-          <div class="col-xs-12 col-sm-6 col-lg-3">
-            <div class="card text-white bg-primary mb-3" style="max-width: 18rem;">
-                <div class="card-body">
-                  <a href="{% url 'work_feed' %}" class="card-title btn btn-primary stretched-link"><h5>Work Feed</h5></a>
-                  <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                </div>
-              </div>
+<!--
+<div class="container-fluid bg-3 text-center">    
+  <div class="row">
+    {% now "SHORT_DATETIME_FORMAT" %}
+    
+    {% for classes in classroom_list %}
+    <div class="col-xs-12 col-sm-6 col-lg-3">
+      <div class="card text-white bg-primary mb-3" style="max-width: 18rem;">
+
+          <div class="card-body">
+              <a href="#" class="card-title btn btn-primary stretched-link"><h5>{{ classes.classroom_subject }}</h5></a>
+            <p class="card-text">
+                {% for work in classes.workitem_set.all %}
+                    {{ work.work_description }}
+                    {{ work.date_assigned }}
+                {% endfor %}
+            </p>
           </div>
         </div>
-      </div><br>
-      
-      </div><br><br>
+    </div>
+    {% endfor %}
+  </div>
+-->
+<!--
+    <ul class="list-group ">
+    {% for work in classroom_list %}
+
+        {% now "DATETIME_FORMAT" as todays_date %}
+        {% if work.get_age <= 0 %}
+            <li class="list-group-item"> {{ work.work_description }}   ----------- subject: {{ work.get_classroom }}</li>
+        {% endif %}
+        
+       
+
+    {% endfor %}
+  </ul>
+-->
+
+
+<!--
+{% for work in classroom_list %}
+
+
+    {% with curr_subject=work.get_classroom %}
+
+
+          <ul class="list-group ">
+              <li class="list-group-item bg-primary text-white">{{ work.get_classroom }}</li>
+              
+              {% for work in classroom_list %}
+                {% if work.get_classroom == curr_subject %}
+                <li class="list-group-item"> {{ work.work_description }}   ----------- subject: {{ work.get_classroom }}</li>
+                {% endif %}
+                {% endfor %}
+            </ul>
+
+    {% endwith %}
+
+{% endfor %}
+--> 
+
+<li class="list-group-item list-group-item-dark">Todays Work</li>
+
+
+{% for class in classroom_list %}
+<ul id = "{{ class.classroom_subject }}" class="list-group ">
+    <li class="list-group-item bg-primary text-white">{{ class.classroom_subject }}</li>
+        {% for work in class.workitem_set.all %}
+        <li class="list-group-item"> {{ work.work_description }}---------------- Created at {{ work.time_assigned }}</li>
+        <li class="list-group-item"> </li>
+        {% empty %}
+        <li>No Homework for this subject :).</li>
+
+        {% endfor %}
+</ul>
+</div><br><br>
+{% endfor %}
+
+
+</div><br>
+
+</div><br><br>
 
 
 </body>

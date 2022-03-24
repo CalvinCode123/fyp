@@ -43,7 +43,10 @@ INSTALLED_APPS = [
     'accounts',
     'pages',
     'widget_tweaks',
-    'waitress'
+    'waitress',
+    'bootstrap_datepicker_plus',
+    'bootstrap4',
+    'crispy_forms',
 ]
 
 MIDDLEWARE = [
@@ -118,7 +121,7 @@ LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'
 
-USE_I18N = True
+USE_I18N = False
 
 USE_TZ = True
 
@@ -135,3 +138,13 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 django_heroku.settings(locals())
+
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+
+AWS_ACCESS_KEY_ID = 'AKIAQJJXKCLJFFNIT44S'
+
+AWS_SECRET_ACCESS_KEY = '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'
+
+AWS_STORAGE_BUCKET_NAME = 'classtrailbucket'
+
+AWS_QUERYSTRING_AUTH = False

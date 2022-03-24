@@ -1,7 +1,8 @@
 from django.contrib.auth.forms import UserCreationForm
 from django import forms
 from django.db import transaction
-from .models import Teacher, Student, User, Classroom, WorkItem
+from .models import Teacher, Student, User, Classroom, WorkItem, UserUpload
+from bootstrap_datepicker_plus.widgets import DatePickerInput
 
 class TeacherSignUpForm(UserCreationForm):
     first_name = forms.CharField(required=True)
@@ -56,3 +57,11 @@ class CreateWorkItemForm(forms.ModelForm):
     class Meta:
         model = WorkItem
         fields= ['classroom','work_description']
+
+class CreateClasstrailForm(forms.ModelForm):
+    class Meta:
+        model = UserUpload
+        fields= ['name','picture']
+        widgets = {
+        'date': DatePickerInput
+        }

@@ -1,12 +1,14 @@
 from types import ClassMethodDescriptorType
 from django.shortcuts import render, redirect, get_object_or_404
-from django.views.generic import CreateView, ListView, DeleteView
-from .models import User, Classroom, Teacher, Student, WorkItem
+from django.views.generic import CreateView, ListView, DeleteView, DetailView
+from .models import User, Classroom, Teacher, Student, UserUpload, WorkItem
 from django.contrib.auth import login, logout,authenticate
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib import messages
-from .forms import TeacherSignUpForm, StudentSignUpForm, CreateClassroomForm, CreateWorkItemForm
+from .forms import TeacherSignUpForm, StudentSignUpForm, CreateClassroomForm, CreateWorkItemForm, CreateClasstrailForm
 from django.http import JsonResponse, HttpResponseRedirect
+from django.utils import timezone
+from datetime import date, timedelta, datetime
 # Create your views here.
 
 def register(request):
@@ -169,25 +171,112 @@ class DeleteClassroomView(DeleteView):
 
 
 class CreateWorkView(CreateView):
-    model = WorkItem
-    template_name = 'assign_work.html'
-    success_url = '/'
+    
+    def get(self, request, *args, **kwargs):
+        context = {'form': CreateWorkItemForm()}
+        return render(request, '../templates/assign_work.html', context)
 
-    def create_work(request):
-    # This method is called when valid form data has been POSTed.
-    # It should return an HttpResponse.
-        if request.method == 'POST':
-            # create a form instance and populate it with data from the request:
-            form = CreateWorkItemForm(request.POST)
-            # check whether it's valid:
-            if form.is_valid():
-                # process the data in form.cleaned_data as required
-                # ...
-                # redirect to a new URL:
-                return HttpResponseRedirect('/')
-
-        # if a GET (or any other method) we'll create a blank form
-        else:
-            form = CreateWorkItemForm()
-
+    def post(self, request, *args, **kwargs):
+        form = CreateWorkItemForm(request.POST)
+        if form.is_valid():
+            work_item = form.save()
+            print(work_item)
+            work_item.save()
+            #return HttpResponseRedirect(reverse_lazy('books:detail', args=[book.id]))
+        messages.success(request, 'Succesfully created work')
         return render(request, 'assign_work.html', {'form': form})
+
+
+class WorkFeedView(ListView):
+    model = Classroom
+    template_name = 'work_feed.html'
+    context_object_name = 'classroom_list'
+    
+    def get_queryset(self):
+        student_id = self.request.user.id
+
+        today = date.today()
+        print("todays date:")
+        print(today)
+        
+        print("url's date:")
+        
+        urlval = self.kwargs.get('date')
+        urlval = datetime.strptime(urlval, "%Y-%m-%d").date()
+        print(urlval)
+
+
+        work_today = WorkItem.objects.filter(
+            date_assigned = urlval
+        )
+        print(work_today)
+
+        work = Classroom.objects.filter(
+            workitem__date_assigned = urlval
+        )
+
+        works = WorkItem.objects.filter(
+            classroom_id__student_id = self.request.user
+        )
+
+
+        print(works)
+
+
+        return Classroom.objects.filter(
+            student__user= self.request.user
+        ).exclude(
+            workitem__isnull=True
+        )
+
+class ClassTrail(ListView):
+    model = UserUpload
+    template_name = 'classtrail.html'
+    context_object_name = 'classtrail_list'
+    
+    def get_queryset(self):
+        student_id = self.request.user.id
+        print(student_id)
+
+        return UserUpload.objects.filter(
+            student_id= self.request.user
+        ).order_by('-date')
+
+
+class CreateClassTrailView(CreateView):
+    def get(self, request, *args, **kwargs):
+        context = {'form': CreateClasstrailForm()}
+        return render(request, '../templates/add_classtrail.html', context)
+
+    def post(self, request, *args, **kwargs):
+        form = CreateClasstrailForm(request.POST, request.FILES)
+        print("hello")
+        if form.is_valid():
+            ct_item = form.save(commit = False)
+            print("hello")
+            ct_item.date = timezone.now()
+            ct_item.student_id = self.request.user.id
+            ct_item.save()
+            #return HttpResponseRedirect(reverse_lazy('books:detail', args=[book.id]))
+        else:
+            print("form not valid")
+        return redirect('classtrail')
+ 
+class ClassTrailDetailView(DetailView):
+    model = UserUpload
+    template_name = 'userupload_detail.html'
+
+
+'''
+        classrooms = Classroom.objects.filter(
+            student__user= self.request.user
+        )    
+        
+        work = []
+        for room in classrooms:
+            for x in room.workitem_set.all():
+                work.append(x)
+        print(work)
+        work
+        return work
+'''     

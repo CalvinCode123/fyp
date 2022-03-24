@@ -17,7 +17,12 @@ urlpatterns=[
     path('student_classroom_list/',views.StudentClassesView.as_view(),name='student_classroom_list'),
     path('classroom_list/<int:id>', views.render_classroom, name = 'classroom'),
     path('delete_classroom/<int:id>', views.delete_classroom, name = 'classroom_delete'),
-    path('assign_work', views.CreateWorkView.as_view(), name='assign_work'),
+    path('assign_work/', views.CreateWorkView.as_view(), name='assign_work'),
+    path('work_feed/',views.WorkFeedView.as_view(),name='work_feed'),
+    path('work_feed/<str:date>/',views.WorkFeedView.as_view(),name='work_feed_date'),
+    path('classtrail/',views.ClassTrail.as_view(),name='classtrail'),
+    path('classtrail/add', views.CreateClassTrailView.as_view(), name='classtrail_add'),
+    path('classtrail/<pk>/',views.ClassTrailDetailView.as_view(), name = 'classtrail_item'),
 
     #path('classroom_list/<int:id>/delete', views.DeleteClassroomView.as_view(), name = 'classroom_delete')
 ]

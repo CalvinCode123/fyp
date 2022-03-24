@@ -19,6 +19,11 @@
         margin-bottom: 0;
         border-radius: 0;
       }
+
+      .jumbotron {
+        height: 10vw;
+
+      }
       
       table, td {
       border: 1px solid black;
@@ -73,6 +78,7 @@
       margin-bottom: 5vw;
     }
     </style>
+
 </head>
 <body>
 
@@ -106,49 +112,34 @@
 
     <div class="jumbotron">
         <div class="container text-center">
-          <h1>{{ user.get_username }}'s StudentHub</h1>      
+          <h1>My ClassTrail</h1>      
         </div>
     </div>
-  
-      <div class="container-fluid bg-3 text-center">    
-        <div class="row">
-          <div class="col-xs-12 col-sm-6 col-lg-3">
-            <div class="card text-white bg-primary mb-3" style="max-width: 18rem;">
-     
-                <div class="card-body">
-                    <a href="{% url 'classtrail' %}" class="card-title btn btn-primary stretched-link"><h5>ClassTrail</h5></a>
-                  <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                </div>
-              </div>
-          </div>
-          <div class="col-xs-12 col-sm-6 col-lg-3"> 
-            <div class="card text-white bg-primary mb-3" style="max-width: 18rem;">
-                <div class="card-body">
-                    <a href="{% url 'student_classes' %}" class="card-title btn btn-primary stretched-link"><h5>View Classes</h5></a>
-                  <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                </div>
-              </div>
-          </div>
-          <div class="col-xs-12 col-sm-6 col-lg-3"> 
-            <div class="card text-white bg-primary mb-3" style="max-width: 18rem;">
-                <div class="card-body">
-                    <a href="#" class="card-title btn btn-primary stretched-link"><h5>View Grades</h5></a>
-                  <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                </div>
-              </div>
-          </div>
-          <div class="col-xs-12 col-sm-6 col-lg-3">
-            <div class="card text-white bg-primary mb-3" style="max-width: 18rem;">
-                <div class="card-body">
-                  <a href="{% url 'work_feed' %}" class="card-title btn btn-primary stretched-link"><h5>Work Feed</h5></a>
-                  <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                </div>
-              </div>
+
+<a href="{% url 'classtrail_add' %}" class="btn btn-outline-primary" role="button">Add Content</a>
+<button type="button" class="btn btn-outline-success">Edit Content</button>
+
+
+<div class="container-fluid bg-3 text-center">    
+  <div class="row">
+    {% for classes in classtrail_list %}
+    <div class="col-xs-12 col-sm-6 col-lg-3">
+      <div class="card text-white bg-primary mb-3" style="max-width: 18rem;">
+
+          <div class="card-body">
+              <a href="{% url 'classtrail_item' classes.id %}" class="card-title btn btn-primary stretched-link"><h5>{{ classes.name }}</h5></a>
+              <img src="{{ classes.picture.url }}" alt="work image">
+            <p class="card-text">Date Uploaded: {{classes.date}}</p>
           </div>
         </div>
-      </div><br>
-      
-      </div><br><br>
+    </div>
+    {% endfor %}
+  </div>
+</div><br>
+
+
+
+</div><br><br>
 
 
 </body>

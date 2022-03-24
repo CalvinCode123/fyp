@@ -127,12 +127,15 @@
         </div>
     </div>
 
-
+  
+    {% if user.is_authenticated and user.is_teacher %}
+    <button type="button" id = "edit_button" class="btn btn-primary">Edit Classroom</button>    {% endif %}
+    {% if user.is_authenticated and user.is_student %}
+    <button type="button" id = "edit_button" class="btn btn-primary">Edit Classroom</button>
+    {% endif %}
 
    <button type="button" id = "edit_button" class="btn btn-primary">Edit Classroom</button>
-   <a href="{% url 'classroom_delete' id=classroom.id %}" class="btn btn-outline-primary" role="button">Delete Classroom</a>
-
-   <a href="{% url 'classroom_delete' id=classroom.id %}"></a><button type="button"  class="btn btn-primary">Delete Classroom</button></a>
+<button type="button" id = "edit_button" class="btn btn-primary">Edit Classroom</button>
 
     <h1>Teacher Name: {{classroom.teacher.first_name}} {{classroom.teacher.last_name}}</h1> 
 
