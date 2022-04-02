@@ -72,6 +72,17 @@
     #myCarousel{
       margin-bottom: 5vw;
     }
+
+    .card {
+      min-height: 30vh ;
+      background-color: #FFFFFF;
+      padding: 0;
+      -webkit-border-radius: 4px;
+      -moz-border-radius: 4px;
+      border-radius: 4px;
+      box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
+    }
+
     </style>
 </head>
 <body>
@@ -117,31 +128,31 @@
      
                 <div class="card-body">
                     <a href="{% url 'classtrail' %}" class="card-title btn btn-primary stretched-link"><h5>ClassTrail</h5></a>
-                  <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                  <p class="card-text">Keep a record of all your work here!</p>
                 </div>
               </div>
           </div>
           <div class="col-xs-12 col-sm-6 col-lg-3"> 
             <div class="card text-white bg-primary mb-3" style="max-width: 18rem;">
                 <div class="card-body">
-                    <a href="{% url 'student_classes' %}" class="card-title btn btn-primary stretched-link"><h5>View Classes</h5></a>
-                  <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                    <a href="{% url 'student_classroom_list' %}" class="card-title btn btn-primary stretched-link"><h5>View Classes</h5></a>
+                  <p class="card-text">View and join classrooms here.</p>
                 </div>
               </div>
           </div>
           <div class="col-xs-12 col-sm-6 col-lg-3"> 
             <div class="card text-white bg-primary mb-3" style="max-width: 18rem;">
                 <div class="card-body">
-                    <a href="#" class="card-title btn btn-primary stretched-link"><h5>View Grades</h5></a>
-                  <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                    <a href="{% url 'view_grades' %}" class="card-title btn btn-primary stretched-link"><h5>View Grades</h5></a>
+                  <p class="card-text">View your grades for your classes.</p>
                 </div>
               </div>
           </div>
           <div class="col-xs-12 col-sm-6 col-lg-3">
-            <div class="card text-white bg-primary mb-3" style="max-width: 18rem;">
+            <div class="card h-100 text-white bg-primary mb-3" style="max-width: 18rem;">
                 <div class="card-body">
-                  <a href="{% url 'work_feed' %}" class="card-title btn btn-primary stretched-link"><h5>Work Feed</h5></a>
-                  <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                  <a href="{% url 'work_feed'%}" class="card-title btn btn-primary stretched-link"><h5>Work Feed</h5></a>
+                  <p class="card-text">View work due for classrooms.</p>
                 </div>
               </div>
           </div>

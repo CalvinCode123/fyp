@@ -74,11 +74,32 @@
             background-color: #b8d1f3;
       }
     
-    #myCarousel{
-      margin-bottom: 5vw;
+      .alert {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(0px);
+    transition: visibility 0s, opacity 250ms, transform 250ms;
+
     }
+    .alert.hide {
+    position: relative;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateX(-10px); 
+    transition: visibility 0s 250ms, opacity 250ms, transform 250ms;
+}
+
     </style>
 
+<script>
+  var m = document.getElementsByClassName("alert");  // Return an array
+  
+  setTimeout(function(){
+     if (m && m.length) {
+         m[0].classList.add('hide');
+     }
+  }, 3000);
+  </script>
 
 </head>
 <body>
@@ -115,6 +136,20 @@
         <div class="container text-center">
           <h1>My Classes</h1>      
         </div>
+    </div>
+
+    <a href="{% url 'manage_classes' %}" class="btn btn-outline-primary" role="button">Create Classroom</a>
+
+    <div class="alert alert-{{ message.tags }}">
+    {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+        <div class="alert alert-success" role="alert">
+            {{message}}
+          </div>
+        {% endfor %}
+    </ul>
+    {% endif %}
     </div>
 
 <div class="container-fluid bg-3 text-center">    

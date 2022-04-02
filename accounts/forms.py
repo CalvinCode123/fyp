@@ -2,7 +2,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django import forms
 from django.db import transaction
 from .models import Teacher, Student, User, Classroom, WorkItem, UserUpload
-from bootstrap_datepicker_plus.widgets import DatePickerInput
+from django.core.exceptions import ValidationError
 
 class TeacherSignUpForm(UserCreationForm):
     first_name = forms.CharField(required=True)
@@ -47,21 +47,50 @@ class StudentSignUpForm(UserCreationForm):
         student.save()
         return user
 
-
 class CreateClassroomForm(forms.ModelForm):
     class Meta:
         model = Classroom
-        fields= ['classroom_subject','classroom_code']
+        fields= ['classroom_subject','classroom_code', 'classroom_description']
     
+    def clean(self):
+        data = self.cleaned_data
+        if data['classroom_code'].isdigit()==False:
+            raise forms.ValidationError('Classroom code must only contain numbers and can only be 5 digits long')
+
 class CreateWorkItemForm(forms.ModelForm):
     class Meta:
         model = WorkItem
         fields= ['classroom','work_description']
 
+    def __init__(self, user=None, **kwargs):
+        super(CreateWorkItemForm, self).__init__(**kwargs)
+        if user:
+            self.fields['classroom'].queryset = Classroom.objects.filter(teacher_id=user)
+
+class UploadWorkItemForm(forms.ModelForm):
+    class Meta:
+        model = UserUpload
+        fields= ['name','picture', 'classtrail_bool']
+
 class CreateClasstrailForm(forms.ModelForm):
     class Meta:
         model = UserUpload
         fields= ['name','picture']
-        widgets = {
-        'date': DatePickerInput
-        }
+
+class GradeWorkForm(forms.Form):
+    classroom = forms.ModelChoiceField(queryset=Classroom.objects.all(), required=False, help_text="Classroom")
+    date = forms.DateField(widget=forms.widgets.DateInput(attrs={'type': 'date'}))
+    
+    def __init__(self, user=None, **kwargs):
+        super(GradeWorkForm, self).__init__(**kwargs)
+        if user:
+            self.fields['classroom'].queryset = Classroom.objects.filter(teacher_id=user)
+
+class WorkFeedFilterForm(forms.Form):
+    date = forms.DateField(widget=forms.widgets.DateInput(attrs={'type': 'date'}))
+  
+
+class GradeWorkUploadForm(forms.ModelForm):
+    class Meta:
+        model = UserUpload
+        fields= ['grade']

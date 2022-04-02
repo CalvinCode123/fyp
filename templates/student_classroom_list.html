@@ -94,7 +94,7 @@
         <li class="nav-item active"><a class="nav-link" href="{% url 'teacher_hub' %}">Teacher Hub</a></li>
         {% endif %}
         {% if user.is_authenticated and user.is_student %}
-        <li class="nav-item active"><a class="nav-link" href="#">Student Hub</a></li>
+        <li class="nav-item active"><a class="nav-link" href="{% url 'student_hub' %}">Student Hub</a></li>
         {% endif %}
         
       </ul>
@@ -117,6 +117,9 @@
         </div>
     </div>
 
+    <a href="{% url 'student_classes' %}" class="btn btn-outline-primary" role="button">Join Classrooms</a>
+
+
 <div class="container-fluid bg-3 text-center">    
   <div class="row">
     {% for classes in classroom_list %}
@@ -124,8 +127,9 @@
       <div class="card text-white bg-primary mb-3" style="max-width: 18rem;">
 
           <div class="card-body">
-              <a href="{% url 'classroom' classes.id %}" class="card-title btn btn-primary stretched-link"><h5>{{ classes.classroom_subject }}</h5></a>
-            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+            <a href="{% url 'classroom' classes.id %}" class="card-title btn btn-primary stretched-link"><h5>{{ classes.classroom_subject }}</h5></a>
+            <p class="card-text">Teacher: {{ classes.teacher.first_name}} {{ classes.teacher.last_name}}</p>
+            <p class="card-text">{{ classes.classroom_description}}</p>
           </div>
         </div>
     </div>

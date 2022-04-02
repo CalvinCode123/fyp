@@ -4,7 +4,8 @@ from django.db import models
 from django.conf import settings
 from datetime import date
 from django.utils import timezone
-
+from django.core.validators import MaxValueValidator, MinValueValidator, FileExtensionValidator
+from django import template
 # Create your models here.
 
 
@@ -24,33 +25,28 @@ class Classroom(models.Model):
     classroom_subject = models.CharField(max_length=100)
     classroom_code = models.CharField(max_length= 5, default = '00000')
     teacher = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    
+    classroom_description = models.TextField()
     def __str__(self):
         return self.classroom_subject
+
+    def get_student(self):
+        return 
+
+    def get_classroom(self):
+        workitems = WorkItem.objects.filter(classroom = self).count()
+        return workitems
 
 class Student(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
     student_name = models.CharField(max_length=100)
     classes = models.ManyToManyField(Classroom, blank = True)
 
-
-
-class UserUpload(models.Model):
-    name = models.CharField(max_length= 30)
-    picture = models.FileField(upload_to='media/')
-    date = models.DateTimeField()
-    student = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-
-    def delete(self):
-        self.picture.delete(save=False)
-        super().delete()
-
 class WorkItem(models.Model):
     classroom = models.ForeignKey(Classroom, on_delete=models.CASCADE)
-    work_description = models.CharField(max_length=500)
+    work_description = models.TextField()
+
     date_assigned = models.DateField(auto_now_add=True, blank=True)
     time_assigned = models.TimeField(auto_now_add=True, blank=True)
-    submission = models.ForeignKey(UserUpload, null = True, on_delete=models.CASCADE)
 
     @property
     def get_age(self):
@@ -58,3 +54,22 @@ class WorkItem(models.Model):
 
     def get_classroom(self):
         return self.classroom.classroom_subject
+
+    def get_date(self):
+        return self.date_assigned
+
+class UserUpload(models.Model):
+    name = models.CharField(max_length= 30)
+    picture = models.FileField(upload_to='media/',  validators=[FileExtensionValidator( ['pdf', 'dox', 'png', 'jpg', 'jpeg', 'docx'] ) ])
+    date = models.DateField()
+    student = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    classtrail_bool = models.BooleanField('Add to ClassTrail', default=True)
+    submission = models.ForeignKey(WorkItem, null = True, on_delete=models.CASCADE)
+    grade = models.IntegerField(null = True, validators=[
+            MaxValueValidator(100),
+            MinValueValidator(1)
+        ])
+
+    def delete(self):
+        self.picture.delete(save=False)
+        super().delete()

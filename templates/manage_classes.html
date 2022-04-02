@@ -79,43 +79,8 @@
     }
     </style>
 
-    <script>
-function create_class()
-  {
-    
+   
 
-    //setting details for a new data object to send to server
-    classroom_subject =  $(" #classroom_subject ").val();
-    console.log(classroom_subject);
-    classroom_code = $(" #classroom_code ").val();
-    console.log(classroom_code);
-    
-    $.ajax({
-      type: 'POST',
-      url: '{% url "create_classroom" %}',
-      data:{
-                classroom_subject:$('#classroom_subject').val(),
-                classroom_code:$('#classroom_code').val(),
-                csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
-                action: 'post'
-            },
-      //dataType: 'json',
-      success: function (data, status, response) {
-        var id = response.responseJSON;
-        console.log(id);
-      }
-    }); 
-  }
-    </script>
-
-    <script>
-      $(document).ready(function(){
-        $("#createform").hide();
-        $("#create_class_button").click(function(){
-          $("#createform").toggle();
-        });
-      });
-    </script>
 
 </head>
 <body>
@@ -155,7 +120,6 @@ function create_class()
     </div>
   
     <a href="{% url 'classroom_list' %}" class="btn btn-outline-primary" role="button">My Classrooms</a>
-    <button type="button" class="btn btn-outline-success" id = "create_class_button">Create Classroom</button>
 
     {% if messages %}
     <ul class="messages">
@@ -164,6 +128,33 @@ function create_class()
         {% endfor %}
     </ul>
     {% endif %}
+
+    <section>
+      <div class="container">
+        <div class="row">
+          <div class="col-md-6 mx-auto">
+            <div class="card">
+              <div class="card-header text-black">
+              </div>
+              <div class="card-body">
+                  {% load crispy_forms_tags %}
+
+                  {% block content %}
+                  <form action="" method="post">
+                      {% csrf_token %}
+                      {{ form|crispy }}
+                      <input type="submit" value="Submit">
+                  </form>
+                  {% endblock %}
+              
+               </div>
+                  </div>   
+              </div>
+            </div>
+          </div>
+      </div>
+    </section>
+
     
     <div class="modal-body" id = "createform">
       <h5>Create Classroom:</h5>

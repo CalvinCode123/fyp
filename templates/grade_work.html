@@ -8,10 +8,6 @@
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
   
@@ -51,7 +47,12 @@
       margin: 0 auto;
   }
   
-
+  img {
+      width: 200px; /* You can set the dimensions to whatever you want */
+      height: 200px;
+      object-fit: cover;
+    margin: auto;
+  }
   
       .hoverTable{
       width:100%; 
@@ -73,29 +74,30 @@
             background-color: #b8d1f3;
       }
     
-      .img-container {
-        height: 70vh;
-        overflow: auto;
-        }
+    #myCarousel{
+      margin-bottom: 5vw;
+    }
 
-        .img-container img {
-        width: auto;
-        height: 70vh;
-        display: block;
-        margin-left: auto;
-        margin-right: auto;
-        }
+    table td:hover {
+    background-color: rgba(0,0,0,.075);
+    }
 
-        .footer {
-            height: 70vh;
-            background: #eee;
-        }
+    #grade_form{
+      margin-left: 70px;
+      margin-right: 70px;
 
-        body {
-            height: 150vh;
-        }
-
+    }
+    
     </style>
+
+<script>
+    $(document).ready(function(){
+        $("#edit_form").hide();
+      $("#edit_button").click(function(){
+        $("#edit_form").toggle();
+      });
+    });
+</script>
 
 </head>
 <body>
@@ -111,7 +113,7 @@
         <li class="nav-item active"><a class="nav-link" href="{% url 'teacher_hub' %}">Teacher Hub</a></li>
         {% endif %}
         {% if user.is_authenticated and user.is_student %}
-        <li class="nav-item active"><a class="nav-link" href="{% url 'student_hub' %}">Student Hub</a></li>
+        <li class="nav-item active"><a class="nav-link" href="#">Student Hub</a></li>
         {% endif %}
         
       </ul>
@@ -128,48 +130,58 @@
     </div>
   </nav>
 
-    <div class="jumbotron">
-        <div class="container text-center">
-          <h1>My ClassTrail</h1>      
-        </div>
-    </div>
-
-    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">Delete Item</button>
-
-    <p>{{ object.name }}</p>
 
 
-    <div class = "img-container">
+{% load crispy_forms_tags %}
 
-        <img src="{{ object.picture.url }}" alt="work image">
+<div id = "grade_form">
+{% block content %}
+<form action="" method="GET" enctype="multipart/form-data">
 
-    </div>
+  {{ form|crispy }}
+
+  <input type="submit" value="Submit">
+</form>
+{% endblock %}
+</div>
+
+{% for work in work_list.workdesc %}
+
+<td ><a>{{ work.work_description }}</a></td>
+{% empty %}
+No Work Uploaded.
+{% endfor %}
+
+      <h5>Submitted:</h5>
+      <table class="table table-bordered">
+        <tbody>
+          <tr>
+            {% for work in work_list.submitted %}
+              <td ><a href="{% url 'grade_work_item' work.id %}">{{ work.student }}</a></td>
+            {% endfor %}
+          </tr>
+        </tbody>
+      </table>
+
+      <h5>Not submitted:</h5>
+      <table class="table table-bordered">
+        <tbody>
+
+            {% for person in work_list.not_submitted %}
+            <tr>
+             <td>{{ person.user }}</td>
+             {% if forloop.counter > 2 %}
+              </tr>          
+              {% endif %}
+
+                
 
 
-    <div class="modal fade" id="myModal" role="dialog">
-        <div class="modal-dialog">
-        
-          <!-- Modal content-->
-          <div class="modal-content">
-            <div class="modal-header">
-             
-              <h4 class="modal-title">Delete Item: {{ object.name }}</h4>
-            </div>
-            <div class="modal-body">
-              <p>Are you sure you want to delete "{{ object.name }}"?</p>
-              <a  href="{% url 'delete_classtrail_item' object.id %}" class="btn btn-outline-danger" role="button">Confirm Delete</a>
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-            </div>
-          </div>
-    
+            {% endfor %}
 
-    <br>
+        </tbody>
+      </table>
 
-    <div id = "footer">
-
-    </div>
 
 </body>
 </html>

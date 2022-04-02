@@ -78,17 +78,15 @@
     #myCarousel{
       margin-bottom: 5vw;
     }
+
+    #workfeed_form{
+      margin-left: 70px;
+      margin-right: 70px;
+
+    }
     </style>
 
-    <script>
-        
-        function convert_date(date)
-        {
-            return date.toISOString().slice(0, 10);
-        }
 
-
-    </script>
 
 
 
@@ -189,10 +187,9 @@
 {% endfor %}
 --> 
 
-<li class="list-group-item list-group-item-dark">Todays Work</li>
 
-
-{% for class in classroom_list %}
+<!--
+{% for class in work_list %}
 <ul id = "{{ class.classroom_subject }}" class="list-group ">
     <li class="list-group-item bg-primary text-white">{{ class.classroom_subject }}</li>
         {% for work in class.workitem_set.all %}
@@ -205,6 +202,37 @@
 </ul>
 </div><br><br>
 {% endfor %}
+--> 
+{% load crispy_forms_tags %}
+<div id = "workfeed_form">
+<form action="" method="GET" enctype="multipart/form-data">
+
+    {{ form|crispy }}
+
+    <input type="submit" value="Submit">
+</form>
+</div>
+<a href="{% url 'work_feed' %}"><span class="glyphicon glyphicon-log-in"></span> View all work</a>
+
+{% for work in work_list %}
+
+{% ifchanged work.date_assigned %}
+<h1>{{ work.date_assigned }}</h1>
+
+{% endifchanged %}
+
+<ul id = "{{ work.get_classroom }}" class="list-group ">
+    <li class="list-group-item bg-primary text-white">{{ work.get_classroom }}</li>
+    <li class="list-group-item"> {{ work.work_description }}---------------- Created at {{ work.time_assigned }}</li>
+    <li class="list-group-item"><a href="{% url 'work_upload' work.id %}"><span></span> Upload Work</a></li>
+    <li class="list-group-item"> </li>
+    {% empty %}
+    <li>No Homework Today :).</li>
+</ul>
+</div><br><br>
+{% endfor %}
+
+
 
 
 </div><br>
