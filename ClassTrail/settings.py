@@ -146,4 +146,6 @@ AWS_STORAGE_BUCKET_NAME = os.environ.get('BUCKET_NAME')
 
 S3_URL = 'https://%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
 
+STATIC_URL = S3_URL
+
 AWS_QUERYSTRING_AUTH = False
