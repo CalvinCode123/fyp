@@ -42,12 +42,6 @@
       margin: 0 auto;
   }
   
-  img {
-      width: 200px; /* You can set the dimensions to whatever you want */
-      height: 200px;
-      object-fit: cover;
-    margin: auto;
-  }
   
       .hoverTable{
       width:100%; 
@@ -68,20 +62,29 @@
       .hoverTable tr:hover {
             background-color: #b8d1f3;
       }
-      
       .img-container {
         height: 70vh;
+        width: 60vw;
         overflow: auto;
         }
 
         .img-container img {
-        width: 55%;
-        height: auto;
+        width: auto;
+        height: 70vh;
         display: block;
         margin-left: auto;
         margin-right: auto;
         }
 
+        .footer {
+            height: 10vh;
+            background: #eee;
+        }
+
+        img {
+      max-width: 100%;
+      max-height: 100%;
+}
  
     </style>
 
@@ -132,20 +135,30 @@
     </ul>
     {% endif %}
 
+    <div class="container-fluid p-10">
+      <div class="row">
+        <div class="col-md-8">
+          <div class = "img-container">
 
-    <div class = "img-container">
+            <img src="{{ object.picture.url }}">
+    
+        </div>
+        </div>
+        <div class="col-md-4">
+          <a  href="{{ object.picture.url }}" download> Download Document </a>
 
-        <img src="{{ object.picture.url }}">
-
+          <form method="post"> 
+              {% csrf_token %} 
+              {{ form.as_p }} 
+              <input type="submit" value="Save"> 
+          </form> 
+        </div>
+      </div>
     </div>
 
-    <a  href="{{ object.picture.url }}" download> Download Document </a>
-
-    <form method="post"> 
-        {% csrf_token %} 
-        {{ form.as_p }} 
-        <input type="submit" value="Save"> 
-    </form> 
+    <br>
+    
+    <div class = "footer navbar-fixed-bottom"></div>
 
 </body>
 </html>

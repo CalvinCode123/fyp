@@ -5,12 +5,11 @@ from datetime import date
 from django.utils import timezone
 from django.core.validators import MaxValueValidator, MinValueValidator, FileExtensionValidator
 from django import template
+from datetime import datetime
+
 # Create your models here.
 
-
-
 class User(AbstractUser):
-
     is_student = models.BooleanField(default=False)
     is_teacher = models.BooleanField(default=False)
     first_name = models.CharField(max_length=100)
@@ -61,6 +60,7 @@ class UserUpload(models.Model):
     name = models.CharField(max_length= 30)
     picture = models.FileField(upload_to='media/',  validators=[FileExtensionValidator( ['pdf', 'dox', 'png', 'jpg', 'jpeg', 'docx'] ) ])
     date = models.DateField()
+    time_assigned = models.TimeField(auto_now_add=True, blank=True)
     student = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     classtrail_bool = models.BooleanField('Add to ClassTrail', default=True)
     submission = models.ForeignKey(WorkItem, null = True, on_delete=models.CASCADE)
@@ -72,3 +72,14 @@ class UserUpload(models.Model):
     def delete(self):
         self.picture.delete(save=False)
         super().delete()
+
+    @property
+    def is_late(self):
+        if self.submission is not None:
+            assigned_date = datetime.combine(self.submission.date_assigned, self.submission.time_assigned)
+            submission_date = datetime.combine(self.date, self.submission.time_assigned)
+            return submission_date
+            
+
+
+    

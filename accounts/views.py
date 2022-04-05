@@ -385,7 +385,7 @@ class ClassTrail(ListView):
     model = UserUpload
     template_name = 'classtrail.html'
     context_object_name = 'classtrail_list'
-    paginate_by = 3
+    paginate_by = 4
     
     def get_queryset(self):
         student_id = self.request.user.id
@@ -411,6 +411,7 @@ class CreateClassTrailView(CreateView):
             print("hello")
             today = date.today()
             ct_item.date = today
+            ct_item.time = today
             ct_item.student_id = self.request.user.id
             ct_item.save()
             #return HttpResponseRedirect(reverse_lazy('books:detail', args=[book.id]))
