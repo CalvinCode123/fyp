@@ -12,17 +12,23 @@ from datetime import date, timedelta, datetime
 from django.views.generic.edit import FormMixin
 from django.urls import reverse, reverse_lazy
 from django.contrib.messages.views import SuccessMessageMixin
-
+from django.contrib.auth.mixins import UserPassesTestMixin
 # Create your views here.
+from django.core.exceptions import PermissionDenied
 
 def register(request):
     return render(request, '../templates/register.html')
 
 def teacher_hub(request):
-    return render(request, '../templates/teacher_hub.html')
-
+    if request.user.is_authenticated and request.user.is_teacher:
+        return render(request, '../templates/teacher_hub.html')
+    else:
+        raise PermissionDenied()
 def student_hub(request):
-    return render(request, '../templates/student_hub.html')
+    if request.user.is_authenticated and request.user.is_student:
+        return render(request, '../templates/student_hub.html')
+    else:
+        raise PermissionDenied()
 
 def manage_classes(request):
     return render(request, '../templates/manage_classes.html')
@@ -63,6 +69,9 @@ def login_request(request):
                 return redirect('/')
             else:
                 messages.error(request, "invalid username or password")
+        
+        else:
+            messages.error(request, "invalid username or password")
     return render(request, '../templates/login.html',
     context={'form':AuthenticationForm()})
 
@@ -140,11 +149,16 @@ def join_classroom(request):
             student.classes.add(classroom)
             student.save()     
             messages.success(request, 'Succesfully joined class')
+            return redirect('student_classroom_list')
 
-        return redirect('student_classroom_list')
+        else:
+            messages.error(request, "invalid classroom id or code")
+            return redirect('student_classroom_list')
+
+        return HttpResponseRedirect('/student_classroom_list/')
 
 
-
+ 
 
 
 
@@ -159,10 +173,13 @@ class TeacherClassesView(ListView):
         )
 
 
-class StudentClassesView(ListView):
+class StudentClassesView(UserPassesTestMixin,ListView):
     model = Classroom
     template_name = 'student_classroom_list.html'
     context_object_name = 'classroom_list'
+
+    def test_func(self):
+        return self.request.user.is_student
     
     
     def get_queryset(self):
@@ -172,10 +189,13 @@ class StudentClassesView(ListView):
             student__user= self.request.user
         )
  
-class ViewGradesView(ListView):
+class ViewGradesView(UserPassesTestMixin,ListView):
     model = WorkItem
     template_name = 'view_grades.html'
     context_object_name = 'work_list'
+
+    def test_func(self):
+        return self.request.user.is_student
 
     
 
@@ -227,10 +247,13 @@ class CreateWorkView(CreateView):
                 messages.success(request, 'Succesfully created work')
             return render(request, 'assign_work.html', {'form': form})
 
-class WorkFeedView(ListView):
+class WorkFeedView(UserPassesTestMixin,ListView):
     model = Classroom
     template_name = 'work_feed.html'
     context_object_name = 'work_list'
+
+    def test_func(self):
+        return self.request.user.is_student
 
 
     def get_queryset(self):
@@ -355,7 +378,11 @@ class WorkFeedView(ListView):
             workitem__isnull=True
         )
 '''
-class WorkFeedUploadView(CreateView):
+class WorkFeedUploadView(UserPassesTestMixin,CreateView):
+
+    def test_func(self):
+        return self.request.user.is_student
+
     def get(self, request, *args, **kwargs):
         context = {'form': UploadWorkItemForm()}
         return render(request, '../templates/upload_work.html', context)
@@ -381,11 +408,14 @@ class WorkFeedUploadView(CreateView):
 
  
 
-class ClassTrail(ListView):
+class ClassTrail(UserPassesTestMixin, ListView):
     model = UserUpload
     template_name = 'classtrail.html'
     context_object_name = 'classtrail_list'
     paginate_by = 4
+
+    def test_func(self):
+        return self.request.user.is_student
     
     def get_queryset(self):
         student_id = self.request.user.id
@@ -399,6 +429,10 @@ class ClassTrail(ListView):
 
 
 class CreateClassTrailView(CreateView):
+
+    def test_func(self):
+        return self.request.user.is_student
+
     def get(self, request, *args, **kwargs):
         context = {'form': CreateClasstrailForm()}
         return render(request, '../templates/add_classtrail.html', context)
@@ -425,6 +459,9 @@ class CreateClassTrailView(CreateView):
 class ClassTrailDetailView(DetailView):
     model = UserUpload
     template_name = 'userupload_detail.html'
+
+    def test_func(self):
+        return self.request.user.is_student
 
     def delete(request, pk):
         print(id)
