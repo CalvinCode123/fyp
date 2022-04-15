@@ -6,6 +6,7 @@ from django.utils import timezone
 from django.core.validators import MaxValueValidator, MinValueValidator, FileExtensionValidator
 from django import template
 from datetime import datetime
+from django.core.exceptions import ValidationError
 
 # Create your models here.
 
@@ -58,7 +59,7 @@ class WorkItem(models.Model):
 
 class UserUpload(models.Model):
     name = models.CharField(max_length= 30)
-    picture = models.FileField(upload_to='media/',  validators=[FileExtensionValidator( ['pdf', 'dox', 'png', 'jpg', 'jpeg', 'docx'] ) ])
+    picture = models.FileField(upload_to='media/')
     date = models.DateField()
     time_assigned = models.TimeField(auto_now_add=True, blank=True)
     student = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
@@ -76,7 +77,6 @@ class UserUpload(models.Model):
     @property
     def is_late(self):
         if self.submission is not None:
-            assigned_date = datetime.combine(self.submission.date_assigned, self.submission.time_assigned)
             submission_date = datetime.combine(self.date, self.submission.time_assigned)
             return submission_date
             

@@ -19,7 +19,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = 'django-insecure-vo(0rpdm+neyn0whkq$o09@^64yp3$-0=wg=iik!qp4t5alq^u'
 
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['classtrail.herokuapp.com']
 CSRF_TRUSTED_ORIGINS = ["https://classtrail.herokuapp.com"]
@@ -79,8 +79,6 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 WSGI_APPLICATION = 'ClassTrail.wsgi.application'
 
-SECURE_BROWSER_XSS_FILTER = True
-
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
@@ -119,7 +117,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Dublin'
 
 USE_I18N = False
 

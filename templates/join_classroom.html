@@ -79,37 +79,6 @@
     }
     </style>
 
-<script>
-    function join_class()
-      {
-        
-    
-        //setting details for a new data object to send to server
-        classroom_id =  $(" #classroom_id ").val();
-        console.log(classroom_id);
-        classroom_code = $(" #classroom_code ").val();
-        console.log(classroom_code);
-        
-        $.ajax({
-          type: 'POST',
-          url: '{% url "join_classroom" %}',
-          data:{
-                    classroom_id:$('#classroom_id').val(),
-                    classroom_code:$('#classroom_code').val(),
-                    csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
-                    action: 'post'
-                },
-          //dataType: 'json',
-          success: function (data, status, response) {
-            var id = response.responseJSON;
-            console.log(id);
-          }
-        }); 
-      }
-        </script>
-
-
-
 </head>
 <body>
 
@@ -157,17 +126,31 @@
     </ul>
     {% endif %}
 
-    <div class="modal-body" id="joinclassform">
-      <form method="POST" class="cclass_form" id="JoinClassroomForm">
-        {% csrf_token %}
-        <div class="form-group">
-          <input type="text" class="form-control" id="classroom_id" placeholder="classroom id">
+    <section>
+        <div class="container">
+          <div class="row">
+            <div class="col-md-6 mx-auto">
+              <div class="card">
+                <div class="card-header text-black">
+                </div>
+                <div class="card-body">
+                    {% load crispy_forms_tags %}
+
+                    {% block content %}
+                    <form action="." method="post">
+                        {% csrf_token %}
+                        {{ form|crispy }}
+                        <input type="submit" value="Join Classroom">
+                    </form>
+                    {% endblock %}
+                
+                 </div>
+                    </div>   
+                </div>
+              </div>
+            </div>
         </div>
-        <div class="form-group">
-          <textarea class="form-control" id="classroom_code" placeholder="Classroom Code"></textarea>
-        </div>
-        <button type="submit"  onclick = "join_class()" class="btn btn-primary">Join Class</button>
-      </form> 
+      </section>
 
 </body>
 </html>

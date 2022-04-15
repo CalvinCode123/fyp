@@ -16,7 +16,7 @@
             <li class="list-group-item"> {{ workitem.work_description }}
             {% for upload in workitem.userupload_set.all %}
                 {% if user.id == upload.student_id %}
-                    {% if upload.grade is None %}
+                    {% if upload.grade is Null %}
                         -----------Not graded yet
                     {% else %}
                 ----------------------{{upload.grade}}

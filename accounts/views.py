@@ -1,3 +1,4 @@
+#Imports
 from types import ClassMethodDescriptorType
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import CreateView, ListView, DeleteView, DetailView, FormView, UpdateView
@@ -5,7 +6,7 @@ from .models import User, Classroom, Teacher, Student, UserUpload, WorkItem
 from django.contrib.auth import login, logout,authenticate
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib import messages
-from .forms import TeacherSignUpForm, StudentSignUpForm, CreateClassroomForm, CreateWorkItemForm, CreateClasstrailForm, UploadWorkItemForm, GradeWorkForm, WorkFeedFilterForm, GradeWorkUploadForm
+from .forms import JoinClassroomForm, TeacherSignUpForm, StudentSignUpForm, CreateClassroomForm, CreateWorkItemForm, CreateClasstrailForm, UploadWorkItemForm, GradeWorkForm, WorkFeedFilterForm, GradeWorkUploadForm
 from django.http import JsonResponse, HttpResponseRedirect
 from django.utils import timezone
 from datetime import date, timedelta, datetime
@@ -13,9 +14,9 @@ from django.views.generic.edit import FormMixin
 from django.urls import reverse, reverse_lazy
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.auth.mixins import UserPassesTestMixin
-# Create your views here.
 from django.core.exceptions import PermissionDenied
 
+#FBV to load static pages
 def register(request):
     return render(request, '../templates/register.html')
 
@@ -33,13 +34,10 @@ def student_hub(request):
 def manage_classes(request):
     return render(request, '../templates/manage_classes.html')
 
-def student_classes(request):
-    return render(request, '../templates/student_classes.html')
-
-
+#CBV CreateView render usercreationform in template, then create teacher object.
 class teacher_register(CreateView):
     models = User
-    form_class = TeacherSignUpForm
+    form_class = TeacherSignUpForm #form defined in forms.py
     template_name = '../templates/teacher_register.html'
 
     def form_valid(self, form):
@@ -47,6 +45,7 @@ class teacher_register(CreateView):
         login(self.request, user)
         return redirect('/')
 
+#CBV CreateView render usercreationform in template, then create student object.
 class student_register(CreateView):
     models = User
     form_class = StudentSignUpForm
@@ -57,6 +56,7 @@ class student_register(CreateView):
         login(self.request, user)
         return redirect('/')
 
+#login method, 
 def login_request(request):
     if request.method=='POST':
         form = AuthenticationForm(data=request.POST)
@@ -75,93 +75,56 @@ def login_request(request):
     return render(request, '../templates/login.html',
     context={'form':AuthenticationForm()})
 
+#logout mehtod
 def logout_view(request):
     logout(request)
     return redirect('/')
 
-'''
-def create_classroom(request):
-    if request.POST.get('action') == 'post':
-        #classroom = Classroom.objects.all()
-        class_subject = request.POST.get('classroom_subject')
-        class_code = request.POST.get('classroom_code')
-        teacher = request.user
-        classroom = Classroom(classroom_subject = class_subject, classroom_code = class_code, teacher = teacher)
-        
-        classroom.save()
-        messages.success(request, "joined class")
-    
-    #return render(request, '../templates/manage_classes.html')
-    return redirect('classroom_list')
-        #return JsonResponse({'status':'SUCCESS'})
-'''
-
+#create classroom view
 class CreateClassroomView(CreateView):
+    #renders form
     def get(self, request, *args, **kwargs):
         context = {'form': CreateClassroomForm()}
         return render(request, '../templates/manage_classes.html', context)
 
+    #posts form
     def post(self, request, *args, **kwargs):
         form = CreateClassroomForm(request.POST)
         if form.is_valid():
             classroom = form.save(commit = False)
             classroom.teacher = self.request.user
             classroom.save()
-            #return HttpResponseRedirect(reverse_lazy('books:detail', args=[book.id]))
-
+            messages.success(request, 'Classroom: '+ classroom.classroom_subject + ' created succesfully')
+            return redirect('classroom_list')
         else:
-            print("form not valid")
+            return render(request, '../templates/manage_classes.html', {'form': form})
 
-        messages.success(request, 'Classroom: '+ classroom.classroom_subject + ' created succesfully')
-        return redirect('classroom_list')
+#method to join classroom
+class JoinClassView(SuccessMessageMixin, FormView):
+    template_name = 'join_classroom.html'
+    form_class = JoinClassroomForm
+    success_url = '../student_classroom_list/'
+    success_message = 'Successfully joined classroom'
+   
+    def form_valid(self, form):
+        id = form.cleaned_data['classroom_id']
+        code = form.cleaned_data['classroom_code']
 
-
-'''
-def create_classroom(request):
-    if request.method=='POST':
-        form = CreateClassroomForm(data=request.POST)
-        if form.is_valid(): #is_valid() checks if username and pword has the appropriate data type
-            class_subject = form.cleaned_data.get('classroom_subject') #setting variables from user input
-            class_code = form.cleaned_data.get('classroom_code')
-            teacher = request.user
-            classroom = Classroom(classroom_subject = class_subject, classroom_code = class_code, teacher = teacher)
-            classroom.save()
-            messages.success(request, "classroom successfully created")
-
-        else:
-            messages.error(request, "")
-    return render(request, '../templates/manage_classes',
-    context={'form':CreateClassroomForm()})
-'''
-
-def join_classroom(request):
-    if request.POST.get('action') == 'post':
-        #classroom = Classroom.objects.all()
-        class_id = request.POST.get('classroom_id')
-        class_code = request.POST.get('classroom_code')
-        print(class_id)
-        user_id = request.user.id
+        user_id = self.request.user
         student = Student.objects.get(user_id = user_id)
-        print(student)
-        classroom = Classroom.objects.get(id = class_id)
-        print(classroom)
-        if classroom.classroom_code == class_code:
+        
+        classroom = Classroom.objects.get(id = id)
+
+        if classroom.classroom_code == code: #checking that classroom code matches
             student.classes.add(classroom)
-            student.save()     
-            messages.success(request, 'Succesfully joined class')
-            return redirect('student_classroom_list')
-
-        else:
-            messages.error(request, "invalid classroom id or code")
-            return redirect('student_classroom_list')
-
-        return HttpResponseRedirect('/student_classroom_list/')
+            student.save()   
+        
+        return super().form_valid(form)
+        
 
 
- 
-
-
-
+        
+#listview for teacher viewing classrooms
 class TeacherClassesView(ListView):
     model = Classroom
     template_name = 'classroom_list.html'
@@ -172,19 +135,18 @@ class TeacherClassesView(ListView):
             teacher_id = self.request.user
         )
 
-
+#listview for students viewing classrooms
 class StudentClassesView(UserPassesTestMixin,ListView):
     model = Classroom
     template_name = 'student_classroom_list.html'
     context_object_name = 'classroom_list'
 
+    #restricts view to only students
     def test_func(self):
         return self.request.user.is_student
     
-    
+    #get_queryset returns a queryset of objects. This queryset gets all the classrooms, where the student is enrolled.
     def get_queryset(self):
-        student_id = self.request.user.id
-        print(student_id)
         return Classroom.objects.filter(
             student__user= self.request.user
         )
@@ -196,8 +158,6 @@ class ViewGradesView(UserPassesTestMixin,ListView):
 
     def test_func(self):
         return self.request.user.is_student
-
-    
 
     def get_queryset(self):
         return Classroom.objects.filter(student__user= self.request.user)
@@ -269,7 +229,7 @@ class WorkFeedView(UserPassesTestMixin,ListView):
                 date_assigned = date
             )
         else:
-            
+
             return WorkItem.objects.filter(
                 classroom__student__user=self.request.user
             ).order_by(
@@ -323,61 +283,6 @@ class EditWorkView(SuccessMessageMixin, UpdateView):
     def get_success_url(self):
         return reverse_lazy('edit_work', kwargs={'pk': self.object.id})    
 
-'''
-class WorkFeedView(ListView):
-    model = Classroom
-    template_name = 'work_feed.html'
-    context_object_name = 'work_list'
-    
-    def get_queryset(self):
-        student_id = self.request.user.id
-
-        today = date.today()
-        print("todays date:")
-        print(today)
-        
-        if 'date' in self.kwargs:
-
-            urlval = self.kwargs.get('date')
-            urlval = datetime.strptime(urlval, "%Y-%m-%d").date()
-            print("url's date:")
-            print(urlval)
-
-            work_today = WorkItem.objects.filter(
-                date_assigned = urlval
-            )
-
-            x = WorkItem.objects.filter(
-                classroom__student__user=self.request.user
-            ).filter(
-                date_assigned = urlval
-            )
-
-            print("x is:")
-            print(x)
-            print("dates work")
-            print(work_today)
-
-
-
-
-            return x
-        else:
-            x = WorkItem.objects.filter(
-                classroom__student__user=self.request.user
-            ).filter(
-                date_assigned = today
-            )
-            return x
-        
- '''       
-'''
-        Classroom.objects.filter(
-            student__user= self.request.user
-        ).exclude(
-            workitem__isnull=True
-        )
-'''
 class WorkFeedUploadView(UserPassesTestMixin,CreateView):
 
     def test_func(self):
@@ -397,14 +302,18 @@ class WorkFeedUploadView(UserPassesTestMixin,CreateView):
             upload_item.date = today
             upload_item.student_id = self.request.user.id
             upload_item.submission = WorkItem.objects.get(id = x)
-            upload_item.save()
-            #return HttpResponseRedirect(reverse_lazy('books:detail', args=[book.id]))
+            if UserUpload.objects.filter(submission =  x):
+                print("already uploaded")
+                messages.error(request, 'Work already submitted for this assignment')
 
-        else:
+            else:  
+                upload_item.save()
+                messages.success(request, 'Item sucessfully uploaded')
+            return redirect('work_feed')
+        else: 
             print("form not valid")
+            return render(request, '../templates/upload_work.html', {'form': form})
 
-        messages.success(request, 'Item sucessfully added to classtrail')
-        return redirect('classtrail')
 
  
 
@@ -429,10 +338,6 @@ class ClassTrail(UserPassesTestMixin, ListView):
 
 
 class CreateClassTrailView(CreateView):
-
-    def test_func(self):
-        return self.request.user.is_student
-
     def get(self, request, *args, **kwargs):
         context = {'form': CreateClasstrailForm()}
         return render(request, '../templates/add_classtrail.html', context)
@@ -445,14 +350,14 @@ class CreateClassTrailView(CreateView):
             print("hello")
             today = date.today()
             ct_item.date = today
-            ct_item.time = today
             ct_item.student_id = self.request.user.id
             ct_item.save()
+            messages.success(request, 'Successfully added item:  '+ ct_item.name)
+            return redirect('classtrail')
             #return HttpResponseRedirect(reverse_lazy('books:detail', args=[book.id]))
         else:
-            print("form not valid")
-        messages.success(request, 'Successfully added item:  '+ ct_item.name)
-        return redirect('classtrail')
+            return render(request, '../templates/add_classtrail.html', {'form': form})
+
 
     
  
@@ -471,26 +376,6 @@ class ClassTrailDetailView(DetailView):
         messages.success(request, 'Successfully deleted item: ' + deleted_item.name)
         return redirect('classtrail')
 
-'''
-class GradeWorkUploadView(DetailView):
-    model = UserUpload
-    template_name = 'grade_work_upload_detail.html'
-
-    def get_context_data(self, **kwargs):
-          context = super(GradeWorkUploadView, self).get_context_data(**kwargs)
-          context['GradeWorkUploadView'] = GradeWorkUploadForm()
-          return context
-
-    def post(self, request, *args, **kwargs):
-          
-          form = GradeWorkUploadForm(request.POST)
-
-          if form.is_valid():
-             # from here you need to change your post request according to your requirement, this is just a demo
-             obj  = form.save(commit=False)
-             print(obj)
-             return redirect('grade_work_item', id) #add your url
-'''
 
 class GradeWorkUploadView(SuccessMessageMixin, UpdateView):
     model = UserUpload
@@ -503,86 +388,6 @@ class GradeWorkUploadView(SuccessMessageMixin, UpdateView):
     def get_success_url(self):
         return reverse_lazy('grade_work_item', kwargs={'pk': self.object.id})
 
-    
-
-'''
-    def grade(request, id):
-        print(id)
-        upload = UserUpload.objects.get(id=id)
-        if request.POST.get('action') == 'post':
-        #classroom = Classroom.objects.all()
-            grade = request.POST.get('grade')
-            upload.grade = grade
-            upload.save()
-            messages.success(request, 'Grade Submitted ')
-            return redirect('grade_work_item')
-'''
-    
-
-'''
-        classrooms = Classroom.objects.filter(
-            student__user= self.request.user
-        )    
-        
-        work = []
-        for room in classrooms:
-            for x in room.workitem_set.all():
-                work.append(x)
-        print(work)
-        work
-        return work
-'''     
-
-'''
-class GradeWorkView(FormView):
-    template_name = 'grade_work.html'
-    form_class = GradeWorkForm
-    success_url = '/#'
-    context_object_name = 'work_list'
-
-    def form_valid(self, form):
-        # This method is called when valid form data has been POSTed.
-        # It should return an HttpResponse.
-        data= form.cleaned_data.get("classroom") 
-        data= form.cleaned_data.get("date")
-        print(data)
-        return super().form_valid(form)  
-'''
-
-'''
-class GradeWorkDetailView(ListView, FormMixin):
-    model = UserUpload
-    form_class = GradeWorkForm
-    template_name = 'grade_work.html'
-    context_object_name = 'work_list'
-
-    def get(self, request, *args, **kwargs):
-        self.form = self.get_form(self.form_class)
-        # Explicitly states what get to call:
-        return ListView.get(self, request, *args, **kwargs)
-
-    def post(self, request, *args, **kwargs):
-        # When the form is submitted, it will enter here
-        self.object = None
-        self.form = self.get_form(self.form_class)
-
-        if self.form.is_valid():
-            classroom = request.POST.get('classroom')
-            date = request.POST.get('date')
- 
-        
-        return self.get(request, *args, **kwargs)
-
-    def get_context_data(self, *args, **kwargs):
-        # Just include the form
-        context = super(GradeWorkDetailView, self).get_context_data(*args, **kwargs)
-        context['form'] = self.form
-        return context
-
-    def get_queryset(self):
-
-        return UserUpload.objects.all()
-'''
 
 class GradeWorkDetailView(ListView):
     model = UserUpload

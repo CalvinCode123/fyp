@@ -160,7 +160,7 @@
 
           <div class="card-body">
               <a href="{% url 'classroom' classes.id %}" class="card-title btn btn-primary stretched-link"><h5>{{ classes.classroom_subject }}</h5></a>
-            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+            <p class="card-text">{{classes.classroom_description}}</p>
           </div>
         </div>
     </div>
