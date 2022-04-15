@@ -143,13 +143,18 @@
         <input type="submit" value="Submit">
     </form>
 
-    {% if messages %}
-    <ul class="messages">
-        {% for message in messages %}
-        <li  {% if message.tags %} class=" {{ message.tags }} " {% endif %}> {{ message }} </li>
-        {% endfor %}
-    </ul>
-    {% endif %}
+    <div class="alert alert-{{ message.tags }}">
+        {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+            {% if message.tags == "success" %} <div class="alert alert-success " role="alert"> {% endif %}
+            {% if message.tags == "error" %} <div class="alert alert-danger" role="alert"> {% endif %}
+                {{message}}
+              </div>
+            {% endfor %}
+        </ul>
+        {% endif %}
+    </div>
 </div>
 </body>
 </html>

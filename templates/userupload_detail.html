@@ -1,19 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+  <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
   
     <title>ClassTrail</title>
 
@@ -24,10 +19,6 @@
         border-radius: 0;
       }
 
-      .jumbotron {
-        height: 10vw;
-
-      }
       
       table, td {
       border: 1px solid black;
@@ -51,7 +42,6 @@
       margin: 0 auto;
   }
   
-
   
       .hoverTable{
       width:100%; 
@@ -72,9 +62,9 @@
       .hoverTable tr:hover {
             background-color: #b8d1f3;
       }
-    
       .img-container {
         height: 70vh;
+        width: 60vw;
         overflow: auto;
         }
 
@@ -87,14 +77,15 @@
         }
 
         .footer {
-            height: 70vh;
+            height: 10vh;
             background: #eee;
         }
 
-        body {
-            height: 150vh;
-        }
-
+        img {
+      max-width: 100%;
+      max-height: 100%;
+}
+ 
     </style>
 
 </head>
@@ -130,46 +121,33 @@
 
     <div class="jumbotron">
         <div class="container text-center">
-          <h1>My ClassTrail</h1>      
+          <h1>{{ object.name }}</h1>      
         </div>
     </div>
 
-    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">Delete Item</button>
-
-    <p>{{ object.name }}</p>
+    <a href="{% url 'classtrail' %}" class="btn btn-outline-primary" role="button">Return to ClassTrail</a>
 
 
-    <div class = "img-container">
+    <div class="container-fluid p-10">
+      <div class="row">
+        <div class="col-md-8">
+          <div class = "img-container">
 
-        <img src="{{ object.picture.url }}" alt="work image">
-
-    </div>
-
-
-    <div class="modal fade" id="myModal" role="dialog">
-        <div class="modal-dialog">
-        
-          <!-- Modal content-->
-          <div class="modal-content">
-            <div class="modal-header">
-             
-              <h4 class="modal-title">Delete Item: {{ object.name }}</h4>
-            </div>
-            <div class="modal-body">
-              <p>Are you sure you want to delete "{{ object.name }}"?</p>
-              <a  href="{% url 'delete_classtrail_item' object.id %}" class="btn btn-outline-danger" role="button">Confirm Delete</a>
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-            </div>
-          </div>
+            <img src="{{ object.picture.url }}">
     
+        </div>
+        </div>
+        <div class="col-md-4">
+          <a  href="{{ object.picture.url }}" download> Download Document </a>
+          <h5>Grade</h5>
+          {{ object.grade }}
+        </div>
+      </div>
+    </div>
 
     <br>
+    
 
-    <div id = "footer">
-
-    </div>
 
 </body>
 </html>

@@ -120,10 +120,7 @@ class JoinClassView(SuccessMessageMixin, FormView):
             student.save()   
         
         return super().form_valid(form)
-        
-
-
-        
+            
 #listview for teacher viewing classrooms
 class TeacherClassesView(ListView):
     model = Classroom
@@ -151,6 +148,7 @@ class StudentClassesView(UserPassesTestMixin,ListView):
             student__user= self.request.user
         )
  
+#view for students to view grades given by teachers
 class ViewGradesView(UserPassesTestMixin,ListView):
     model = WorkItem
     template_name = 'view_grades.html'
@@ -163,27 +161,28 @@ class ViewGradesView(UserPassesTestMixin,ListView):
         return Classroom.objects.filter(student__user= self.request.user)
 
 
+#view for teachers 
 class RendClassroom(DetailView):
     model = Classroom
     template_name = 'classroom.html'
 
-
+    #this function deletes the classroom from the database
     def delete(request, id):
         print(id)
         deleted_room = Classroom.objects.get(id=id)
         Classroom.objects.filter(id=id).delete()
         
-        messages.error(request, 'Successfully deleted classroom: ' + deleted_room.classroom_subject)
+        messages.success(request, 'Successfully deleted classroom: ' + deleted_room.classroom_subject)
         return redirect('classroom_list')
 
 
-
+#view to delete classrooms
 class DeleteClassroomView(DeleteView):
     model = Classroom
     success_url = "/"
 
 
-
+#view for teachers for creating workitem objects
 class CreateWorkView(CreateView):
         
     def get(self, request, *args, **kwargs):
@@ -207,6 +206,7 @@ class CreateWorkView(CreateView):
                 messages.success(request, 'Succesfully created work')
             return render(request, 'assign_work.html', {'form': form})
 
+#view for students to view the workfeed, populated with workitems created by teachers
 class WorkFeedView(UserPassesTestMixin,ListView):
     model = Classroom
     template_name = 'work_feed.html'
@@ -241,11 +241,11 @@ class WorkFeedView(UserPassesTestMixin,ListView):
         context['form'] = self.form
         return context
 
+#a view for teachers to view the work they have assigned
 class TeacherWorkFeedView(ListView):
     model = Classroom
     template_name = 'teacher_work_feed.html'
-    context_object_name = 'work_list'
-
+    context_object_name = 'work_list' #name of the list of objects passed to view
 
     def get_queryset(self):
         self.form = WorkFeedFilterForm(data = self.request.GET or None)
@@ -272,8 +272,7 @@ class TeacherWorkFeedView(ListView):
         context['form'] = self.form
         return context
 
-
-
+#view for teachers for editing a workfeed assignment
 class EditWorkView(SuccessMessageMixin, UpdateView):
     model = WorkItem
     template_name = 'edit_work_detail.html'
@@ -283,6 +282,7 @@ class EditWorkView(SuccessMessageMixin, UpdateView):
     def get_success_url(self):
         return reverse_lazy('edit_work', kwargs={'pk': self.object.id})    
 
+#view for uploading useruploads objects from the workfeed for teacher marking
 class WorkFeedUploadView(UserPassesTestMixin,CreateView):
 
     def test_func(self):
@@ -314,9 +314,7 @@ class WorkFeedUploadView(UserPassesTestMixin,CreateView):
             print("form not valid")
             return render(request, '../templates/upload_work.html', {'form': form})
 
-
- 
-
+#View for classtrail, list of userupload items
 class ClassTrail(UserPassesTestMixin, ListView):
     model = UserUpload
     template_name = 'classtrail.html'
@@ -336,7 +334,7 @@ class ClassTrail(UserPassesTestMixin, ListView):
             classtrail_bool = True
         ).order_by('-date')
 
-
+#view for creating items for classtrail
 class CreateClassTrailView(CreateView):
     def get(self, request, *args, **kwargs):
         context = {'form': CreateClasstrailForm()}
@@ -358,9 +356,7 @@ class CreateClassTrailView(CreateView):
         else:
             return render(request, '../templates/add_classtrail.html', {'form': form})
 
-
-    
- 
+#view for single userupload object
 class ClassTrailDetailView(DetailView):
     model = UserUpload
     template_name = 'userupload_detail.html'
@@ -376,7 +372,7 @@ class ClassTrailDetailView(DetailView):
         messages.success(request, 'Successfully deleted item: ' + deleted_item.name)
         return redirect('classtrail')
 
-
+#view for teachers to grade work
 class GradeWorkUploadView(SuccessMessageMixin, UpdateView):
     model = UserUpload
     template_name = 'grade_work_upload_detail.html'
@@ -388,7 +384,7 @@ class GradeWorkUploadView(SuccessMessageMixin, UpdateView):
     def get_success_url(self):
         return reverse_lazy('grade_work_item', kwargs={'pk': self.object.id})
 
-
+#view of student uploads
 class GradeWorkDetailView(ListView):
     model = UserUpload
     template_name = 'grade_work.html'

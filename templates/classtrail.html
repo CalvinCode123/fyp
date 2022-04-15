@@ -9,15 +9,18 @@
 
 <a href="{% url 'classtrail_add' %}" class="add_button btn btn-outline-primary" role="button">Add Content</a>
 
-{% if messages %}
-<ul class="messages">
-    {% for message in messages %}
-    <div class="alert alert-success" role="alert">
-        {{message}}
-      </div>
-    {% endfor %}
-</ul>
-{% endif %}
+<div class="alert alert-{{ message.tags }}">
+  {% if messages %}
+  <ul class="messages">
+      {% for message in messages %}
+      {% if message.tags == "success" %} <div class="alert alert-success " role="alert"> {% endif %}
+      {% if message.tags == "error" %} <div class="alert alert-danger" role="alert"> {% endif %}
+          {{message}}
+        </div>
+      {% endfor %}
+  </ul>
+  {% endif %}
+</div>
 
 
 <div class = "center">
