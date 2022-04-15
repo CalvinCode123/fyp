@@ -25,6 +25,7 @@ ALLOWED_HOSTS = ['classtrail.herokuapp.com']
 CSRF_TRUSTED_ORIGINS = ["https://classtrail.herokuapp.com"]
 
 #setting custom user model defined in models.py
+
 AUTH_USER_MODEL = 'accounts.User'
 
 # Application definition
