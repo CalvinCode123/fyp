@@ -302,7 +302,7 @@ class WorkFeedUploadView(UserPassesTestMixin,CreateView):
             upload_item.date = today
             upload_item.student_id = self.request.user.id
             upload_item.submission = WorkItem.objects.get(id = x)
-            if UserUpload.objects.filter(submission =  x):
+            if UserUpload.objects.filter(submission =  x).filter(student_id =  self.request.user):
                 print("already uploaded")
                 messages.error(request, 'Work already submitted for this assignment')
 
