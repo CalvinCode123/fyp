@@ -10,16 +10,19 @@ from django.core.exceptions import ValidationError
 
 # Create your models here.
 
+#model for the user, uses 2 boolean fields to define user types.
 class User(AbstractUser):
     is_student = models.BooleanField(default=False)
     is_teacher = models.BooleanField(default=False)
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
 
+#teacher user
 class Teacher(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
     teacher_name = models.CharField(max_length=100)
 
+#classroom model, teacher foreignkey is the teacher who created the classroom. Teachers can have many classrooms.
 class Classroom(models.Model):
     classroom_subject = models.CharField(max_length=100)
     classroom_code = models.CharField(max_length= 5, default = '00000')
@@ -35,6 +38,7 @@ class Classroom(models.Model):
         workitems = WorkItem.objects.filter(classroom = self).count()
         return workitems
 
+#student model, classes field is the relationship a student has with classrooms
 class Student(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
     student_name = models.CharField(max_length=100)
@@ -61,7 +65,7 @@ class UserUpload(models.Model):
     name = models.CharField(max_length= 30)
     picture = models.FileField(upload_to='media/')
     date = models.DateField()
-    time_assigned = models.TimeField(auto_now_add=True, blank=True)
+    time_assigned = models.TimeField()
     student = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     classtrail_bool = models.BooleanField('Add to ClassTrail', default=True)
     submission = models.ForeignKey(WorkItem, null = True, on_delete=models.CASCADE)

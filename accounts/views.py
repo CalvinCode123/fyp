@@ -299,7 +299,9 @@ class WorkFeedUploadView(UserPassesTestMixin,CreateView):
         if form.is_valid():
             upload_item = form.save(commit = False)
             today = date.today()
+            time = datetime.now().time()
             upload_item.date = today
+            upload_item.time_assigned = time
             upload_item.student_id = self.request.user.id
             upload_item.submission = WorkItem.objects.get(id = x)
             if UserUpload.objects.filter(submission =  x).filter(student_id =  self.request.user):

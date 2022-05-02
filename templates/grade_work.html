@@ -163,7 +163,7 @@ No Work Uploaded.
             {% for work in work_list.submitted %}
             <tr>
               <td ><a href="{% url 'grade_work_item' work.id %}">{{ work.student.first_name }} {{ work.student.last_name }}</a></td>
-              <td > {{ work.is_late }}</td>
+              <td > {{ work.date}} {{ work.time_assigned}}</td>
             </tr>
             {% endfor %}
 
