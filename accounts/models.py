@@ -65,7 +65,7 @@ class UserUpload(models.Model):
     name = models.CharField(max_length= 30)
     picture = models.FileField(upload_to='media/')
     date = models.DateField()
-    time_assigned = models.TimeField()
+    time_assigned = models.TimeField(auto_now_add=True, blank=True)
     student = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     classtrail_bool = models.BooleanField('Add to ClassTrail', default=True)
     submission = models.ForeignKey(WorkItem, null = True, on_delete=models.CASCADE)
