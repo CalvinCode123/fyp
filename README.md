@@ -8,7 +8,7 @@ My Final Year Project completed on 15/4/21, imported from an old GitHub account.
 
 ### Teacher Design
 
-![Teacher Wireframe](https://imgur.com/rXMNyHi)
+![Teacher Wireframe](https://imgur.com/rXMNyHi "Teacher Wireframe")
 
 ### Student Design
 
