@@ -9,16 +9,23 @@ My Final Year Project completed on 15/4/21, imported from an old GitHub account.
 ### Teacher Design
 
 <p align="center">
-  <img src="https://imgur.com/eVNL2ot.jpg"/>
+  <img src="https://imgur.com/rXMNyHi.jpg" width="200" />
 </p>
 
 ### Student Design
 
-![Student Wireframe 1](https://imgur.com/eVNL2ot.jpg)
+<p align="center">
+  <img src="https://imgur.com/eVNL2ot.jpg" width="200" />
+</p>
 
-![Student Wireframe 2](https://imgur.com/0ORAsXT.jpg)
+<p align="center">
+  <img src="https://imgur.com/0ORAsXT.jpg" width="200" />
+</p>
+
 
 ### Database Design
 
-![Database Design](https://imgur.com/8W3CHJ6.jpg)
+<p align="center">
+  <img src="https://imgur.com/8W3CHJ6.jpg" width="200" />
+</p>
 
